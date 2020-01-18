@@ -1,8 +1,8 @@
 # taquito-react-boilerplate
 
-# Built with Taquito
+- Built with Taquito
 
-## A minimal React/Typescript setup for starting developing Tezos DApps quickly with Taquito.
+A minimal React/Typescript setup for starting developing Tezos DApps quickly with Taquito.
 
 ## Dependencies
 
