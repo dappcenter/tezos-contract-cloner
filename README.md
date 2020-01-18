@@ -1,6 +1,6 @@
 # taquito-react-boilerplate
 
-- Built with Taquito
+- Built with Taquito (https://github.com/ecadlabs/taquito)
 
 A minimal React/Typescript setup for starting developing Tezos DApps quickly with Taquito.
 
