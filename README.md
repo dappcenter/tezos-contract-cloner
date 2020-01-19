@@ -11,6 +11,7 @@ A minimal React/Typescript setup for starting developing Tezos DApps quickly wit
 
 Typescript - for typing code for type-safe implementation.
 React - for building modern web UIs with reusable components.
+
 &nbsp;
 
 # Getting Started
@@ -20,6 +21,8 @@ React - for building modern web UIs with reusable components.
 ## Fork this repository:
 
 Click the Fork button
+
+&nbsp;
 
 ## Install dependencies:
 
