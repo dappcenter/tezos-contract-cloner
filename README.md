@@ -2,14 +2,18 @@
 
 - Built with Taquito (https://github.com/ecadlabs/taquito)
 
+
 A minimal React/Typescript setup for starting developing Tezos DApps quickly with Taquito.
+
 
 ## Dependencies
 
 Typescript - for typing code for type-safe implementation.
 React - for building modern web UIs with reusable components.
 
+
 # Getting Started
+
 
 ## Fork this repository:
 
