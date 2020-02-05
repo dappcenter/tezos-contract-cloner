@@ -14,13 +14,7 @@ React - for building modern web UIs with reusable components.
 
 &nbsp;
 
-# Getting Started
-
-&nbsp;
-
-## Fork this repository:
-
-Click the Fork button
+# Run Instructions:
 
 &nbsp;
 
@@ -28,8 +22,8 @@ Click the Fork button
 
 `yarn`
 
-Start development server:
+## Start development server:
 
 `yarn start`
 
-Open http://localhost:1234 in your browser to see a minimal app
+Open http://localhost:1234 in your browser to see the boilerplate app. Happy Coding!
