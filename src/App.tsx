@@ -1,48 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { Tezos, TezosToolkit } from "@taquito/taquito";
+import React, { useEffect } from "react";
+import { Tezos } from "@taquito/taquito";
 import "./App.css";
-import logo from "./assets/built-with-taquito.png";
+import { useForm } from "react-hook-form";
+import FAUCET_KEY from "./utils/carthage-wallet";
 
 const App: React.FC = () => {
-  const [address, setAddress] = useState<string>("");
-  const [balance, setBalance] = useState<number>(0);
-  const [error, setError] = useState<string>("");
+  const { register, handleSubmit } = useForm();
+  Tezos.setProvider({ rpc: "https://api.carthagenet.tzstats.com/" });
+
+  const onSubmit = async (data: any) => {
+    const txn = await Tezos.contract.transfer({ to: data.address, amount: parseInt(data.amount) }).then(op => {
+      console.log(txn);
+    });
+  };
 
   useEffect(() => {
-    Tezos.setProvider({ rpc: "https://rpc.tezrpc.me" });
+    Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
   }, []);
-
-  const handleAddressChange = (e: any) => {
-    setAddress(e.target.value);
-  };
-
-  const showBalance = () => {
-    Tezos.rpc
-      .getBalance(address)
-      .then(balance => setBalance(balance.toNumber() / 1000000))
-      .catch(e => setError("Address not found"));
-  };
 
   return (
     <div className="App">
-      <h1>Taquito Boilerplate App</h1>
+      <h1>Carthagenet Transaction Tool</h1>
       <div id="dialog">
-        <div id="header">Show Balance</div>
         <div id="content">
           <div id="balance-form">
-            <input id="address-input" onChange={handleAddressChange} type="text" placeholder="Enter wallet address" />
-            <a onClick={showBalance} id="show-balance-button" href="#">
-              Show
-            </a>
-          </div>
-          <div id={`${error}` ? "error-message" : ""}>{error}</div>
-          <div id="balance-output">
-            <span id="balance">{balance}</span>ꜩ
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <input placeholder="Receiving Address" id="address-input" name="address" ref={register} />
+              <br />
+              <input placeholder="Amount of Tezos" id="address-input" type="number" name="amount" ref={register} />
+              <input id="show-balance-button" type="submit" />
+            </form>
           </div>
         </div>
-      </div>
-      <div id="footer">
-        <img src={logo} />
       </div>
     </div>
   );
