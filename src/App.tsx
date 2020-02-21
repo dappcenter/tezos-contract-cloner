@@ -4,6 +4,8 @@ import "./App.css";
 import { useForm } from "react-hook-form";
 import FAUCET_KEY from "./utils/carthage-wallet";
 
+// Integrate custom support for Carthagenet RPC layer
+
 const App: React.FC = () => {
   const { register, handleSubmit } = useForm();
   Tezos.setProvider({ rpc: "https://api.carthagenet.tzstats.com/" });
