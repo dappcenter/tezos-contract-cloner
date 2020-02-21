@@ -1,22 +1,35 @@
 body {
-  display: flex;
+  display: flex-start;
   flex-direction: column;
   align-items: center;
   height: 100%;
   font-family: sans-serif;
-  padding-top: 100px;
 }
 
 h1 {
   color: #35636e;
 }
-
+#wallet {
+  margin: 0 auto;
+  text-align: center;
+}
 #dialog {
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
   width: 500px;
   border: 1px solid #35636e;
   border-radius: 3px;
+}
+
+#rpc-dialog {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+#rpc h3 {
+  padding-left: 20px;
 }
 
 #header {
@@ -32,6 +45,13 @@ h1 {
   padding: 20px;
 }
 
+#rpc-content {
+  display: flex-start;
+  flex-direction: column;
+  float: left;
+  padding: 0px 20px 20px 20px;
+}
+
 #footer {
   display: flex;
   justify-content: flex-end;
@@ -40,6 +60,15 @@ h1 {
 }
 
 #address-input {
+  padding: 10px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  border: 1px solid #35636e;
+  border-radius: 3px;
+  width: 95%;
+}
+
+#rpc-input {
   padding: 10px;
   margin-bottom: 8px;
   font-size: 18px;
