@@ -1,19 +1,3 @@
-# taquito-react-boilerplate
-
-- Built with Taquito (https://github.com/ecadlabs/taquito)
-  &nbsp;
-
-A minimal React/Typescript setup for starting developing Tezos DApps quickly with Taquito.
-
-&nbsp;
-
-## Dependencies
-
-Typescript - for typing code for type-safe implementation.
-React - for building modern web UIs with reusable components.
-
-&nbsp;
-
 # Run Instructions:
 
 &nbsp;
@@ -22,8 +6,17 @@ React - for building modern web UIs with reusable components.
 
 `yarn`
 
+## Add faucet wallet:
+
+1. Go to Carthagenet faucet https://faucet.tzalpha.net/
+2. Copy/Paste entire object into `/utils/carthage-wallet.ts`
+
 ## Start development server:
 
 `yarn start`
 
-Open http://localhost:1234 in your browser to see the boilerplate app. Happy Coding!
+Open http://localhost:3000 in your browser to see the boilerplate app. Happy Coding!
+
+## Set provider:
+
+Add your preferred provider in the input. Once you submit your key will be imported as well.
