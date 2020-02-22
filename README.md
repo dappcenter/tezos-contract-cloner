@@ -1,7 +1,5 @@
 # Run Instructions:
 
-&nbsp;
-
 ## Install dependencies:
 
 `yarn`
