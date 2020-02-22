@@ -13,7 +13,7 @@
 
 `yarn start`
 
-Open http://localhost:3000 in your browser to see the boilerplate app. Happy Coding!
+Open http://localhost:3000 in your browser to see the app.
 
 ## Set provider:
 
