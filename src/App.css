@@ -9,9 +9,17 @@ body {
 h1 {
   color: #35636e;
 }
+
 #wallet {
   margin: 0 auto;
   text-align: center;
+}
+
+#rpc ul {
+  padding-left: 0px;
+}
+#rpc li {
+  list-style: none;
 }
 #dialog {
   display: flex;
@@ -50,6 +58,16 @@ h1 {
   flex-direction: column;
   float: left;
   padding: 0px 20px 20px 20px;
+}
+
+li {
+  padding-bottom: 5px;
+}
+
+#rpc h3:nth-child(2) {
+  padding-bottom: 0px;
+  padding-top: 5px;
+  margin-bottom: 5px;
 }
 
 #footer {

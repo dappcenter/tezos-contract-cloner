@@ -1,28 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Tezos } from "@taquito/taquito";
 import "./App.css";
 import { useForm } from "react-hook-form";
-import FAUCET_KEY from "./utils/carthage-wallet";
 import Provider from "./Provider";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 const App: React.FC = () => {
   const { register, handleSubmit } = useForm();
-  const [provider, setProvider] = useState("https://api.carthagenet.tzstats.com/");
+  const [txnMsg, setTxnMsg] = useState("");
+  const [error, setError] = useState("");
+  const [snackbar, showSnackbar] = useState(false);
 
-  const onSubmit = async (data: any) => {
-    const txn = await Tezos.contract.transfer({ to: data.address, amount: parseInt(data.amount) }).then(op => {});
+  const onSubmit = (data: any): any => {
+    const txn = Tezos.contract
+      .transfer({ to: data.address, amount: parseInt(data.amount) })
+      .then(op => {
+        op.confirmation();
+      })
+      .then(block => setTxnMsg(`Block height: ${block}`))
+      .catch(error => setError(`Error: ${error} ${JSON.stringify(error, null, 2)}`));
+    return txn;
   };
 
-  useEffect(() => {
-    Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
-    Tezos.setProvider({ rpc: provider });
-  }, []);
+  const closeSnackbar = () => {
+    showSnackbar(false);
+  };
 
   return (
     <div>
-      <Provider provider={provider} setProvider={setProvider} />
+      <Provider />
       <div id="wallet">
         <h1>Carthagenet Transaction Tool</h1>
+        {txnMsg && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={snackbar}
+            autoHideDuration={3000}
+            onClose={closeSnackbar}
+          >
+            <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity="success">
+              {txnMsg}
+            </MuiAlert>
+          </Snackbar>
+        )}
+        {error && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={snackbar}
+            autoHideDuration={3000}
+            onClose={closeSnackbar}
+          >
+            <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity="warning">
+              {error}
+            </MuiAlert>
+          </Snackbar>
+        )}
         <div id="dialog">
           <div id="content">
             <div id="balance-form">
