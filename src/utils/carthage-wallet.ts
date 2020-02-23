@@ -1,26 +1,26 @@
 const FAUCET_KEY = {
-  mnemonic: [
-    "pottery",
-    "vicious",
-    "tuna",
-    "creek",
-    "pistol",
-    "cash",
-    "smooth",
-    "tomorrow",
-    "bullet",
-    "plastic",
-    "evil",
-    "oil",
-    "song",
-    "size",
-    "glass"
+  "mnemonic": [
+    "cart",
+    "will",
+    "page",
+    "bench",
+    "notice",
+    "leisure",
+    "penalty",
+    "medal",
+    "define",
+    "odor",
+    "ride",
+    "devote",
+    "cannon",
+    "setup",
+    "rescue"
   ],
-  secret: "cfeb559d60e8bdcf317810fab272e907a0add0a6",
-  amount: "8949816805",
-  pkh: "tz1Knpz4vqfZgAJjk6GmdtoBf13QuEb5eodU",
-  password: "HQyzj3SyFm",
-  email: "qbcfgbvq.nypqktwu@tezos.example.org"
+  "secret": "35f266fbf0fca752da1342fdfc745a9c608e7b20",
+  "amount": "4219352756",
+  "pkh": "tz1YBMFg1nLAPxBE6djnCPbMRH5PLXQWt8Mg",
+  "password": "Fa26j580dQ",
+  "email": "jxmjvauo.guddusns@tezos.example.org"
 };
 
 export default FAUCET_KEY;
