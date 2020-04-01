@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Tezos } from "@taquito/taquito";
+import { Tezos, TezosToolkit } from "@taquito/taquito";
 import "./App.css";
 import { useForm } from "react-hook-form";
 import Provider from "./Provider";
@@ -9,23 +9,26 @@ import FAUCET_KEY from "./utils/carthage-wallet";
 
 const App: React.FC = () => {
   const { register, handleSubmit } = useForm();
-  const [txnAmount, setTxnAmount] = useState(0);
   const [txnAddress, setTxnAddress] = useState("");
+  const [code, setCode] = useState("");
+  const [storage, setStorage] = useState("");
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
-
+  const toolkit = new TezosToolkit();
   const onSubmit = async (data: any): Promise<any> => {
     await Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
-    setTxnAmount(parseInt(data.amount, 10));
-    setTxnAddress(data.address);
-    showSnackbar(true);
-    const txn = Tezos.contract
-      .transfer({ to: data.address, amount: parseInt(data.amount) })
-      .then(op => {
-        op.confirmation();
-      })
-      .catch(error => setError(`Error: ${error} ${JSON.stringify(error, null, 2)}`));
-    return txn;
+    await Tezos.rpc.getScript("KT1HqWsXrGbHWc9muqkApqWu64WsxCU3FoRf").then(t => {
+      setCode(JSON.stringify(t.code as any));
+      setStorage(JSON.stringify(t.storage as any));
+    });
+    // await toolkit.rpc.getScript("KT1HqWsXrGbHWc9muqkApqWu64WsxCU3FoRf").then(t => console.log(t));
+    // setTxnAddress(data.address);
+    // showSnackbar(true);
+    // const txn = Tezos.contract
+    //   .at(data.address)
+    //   .then(contract => console.log(contract))
+    //   .catch(error => setError(`Error: ${error} ${JSON.stringify(error, null, 2)}`));
+    // return txn;
   };
 
   const closeSnackbar = () => {
@@ -36,9 +39,9 @@ const App: React.FC = () => {
     <div>
       <Provider />
       <div id="wallet">
-        <h1>Carthagenet Transaction Tool</h1>
+        <h1>Carthagenet Contract Tool</h1>
 
-        {txnAddress && txnAmount ? (
+        {txnAddress ? (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={snackbar}
@@ -46,10 +49,10 @@ const App: React.FC = () => {
             onClose={closeSnackbar}
           >
             <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity="success">
-              {txnAmount && txnAddress ? (
+              {txnAddress ? (
                 <>
-                  Sending {txnAmount} to {txnAddress}
-                  <a target="_blank" href={`https://carthagenet.tzstats.com/${txnAddress}`}>
+                  Grabbing data from {txnAddress}
+                  <a target="_blank" rel="noopener noreferrer" href={`https://carthagenet.tzstats.com/${txnAddress}`}>
                     View on TzStats
                   </a>
                 </>
@@ -75,12 +78,17 @@ const App: React.FC = () => {
           <div id="content">
             <div id="balance-form">
               <form onSubmit={handleSubmit(onSubmit)}>
-                <input placeholder="Receiving Address" id="address-input" name="address" ref={register} />
+                <input placeholder="Contract Address" id="address-input" name="address" ref={register} />
                 <br />
-                <input placeholder="Amount of Tezos" id="address-input" name="amount" ref={register} />
                 <input id="show-balance-button" type="submit" />
               </form>
             </div>
+            {storage ||
+              (code && (
+                <div>
+                  {storage} {code}
+                </div>
+              ))}
           </div>
         </div>
       </div>

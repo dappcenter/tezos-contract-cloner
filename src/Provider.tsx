@@ -12,7 +12,7 @@ const App: any = () => {
 
   const onSubmit = async (data: any) => {
     if (data.rpc !== "") {
-      Tezos.setProvider({ rpc: data.rpc });
+      await Tezos.setProvider({ rpc: data.rpc });
     }
     setProviderMsg("Provider set and key file is importing");
     showSnackbar(true);
