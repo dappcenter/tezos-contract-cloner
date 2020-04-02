@@ -7,23 +7,34 @@ import Provider from "./Provider";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FAUCET_KEY from "./utils/carthage-wallet";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
 const App: React.FC = () => {
   const { register, handleSubmit } = useForm();
   const [txnAddress, setTxnAddress] = useState("");
   const [code, setCode] = useState<MichelsonV1Expression[] | string>([]);
   const [storage, setStorage] = useState<MichelsonV1Expression | string>();
+  const [network, setNetwork] = useState<string>("carthagenet");
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
 
-  useEffect(() => {
-    if (code) {
-      console.log(code);
-    }
-    if (storage) {
-      console.log(storage);
-    }
-  }, [code, storage]);
+  // useEffect(() => {
+  //   if (code) {
+  //     console.log(code);
+  //   }
+  //   if (storage) {
+  //     console.log(storage);
+  //   }
+  // }, [code, storage]);
+  const handleChange = (event: React.ChangeEvent) => {
+    //@ts-ignore
+    console.log(event.target.value as any);
+    setNetwork((event.target as HTMLSelectElement).value as string);
+  };
 
   const onSubmit = async (data: any): Promise<any> => {
     await Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
@@ -59,7 +70,7 @@ const App: React.FC = () => {
     <div>
       <Provider />
       <div id="wallet">
-        <h1>Carthagenet Contract Tool</h1>
+        <h1>{network.charAt(0).toUpperCase() + network?.slice(1)} Contract Tool</h1>
 
         {txnAddress ? (
           <Snackbar
@@ -72,7 +83,7 @@ const App: React.FC = () => {
               {txnAddress ? (
                 <>
                   Grabbing data from {txnAddress}
-                  <a target="_blank" rel="noopener noreferrer" href={`https://carthagenet.tzstats.com/${txnAddress}`}>
+                  <a target="_blank" rel="noopener noreferrer" href={`https://${network}.tzstats.com/${txnAddress}`}>
                     View on TzStats
                   </a>
                 </>
@@ -93,6 +104,21 @@ const App: React.FC = () => {
             </MuiAlert>
           </Snackbar>
         )}
+
+        <FormControl>
+          <InputLabel id="demo-simple-select-helper-label">Network</InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            value={network}
+            onChange={e => handleChange(e as any)}
+          >
+            <MenuItem value="carthagenet">Carthagenet</MenuItem>
+            <MenuItem value="mainnet">Mainnet</MenuItem>
+            <MenuItem value="sandbox">Sandbox</MenuItem>
+          </Select>
+          <FormHelperText>Choose A Network</FormHelperText>
+        </FormControl>
 
         <div id="dialog">
           <div id="content">
