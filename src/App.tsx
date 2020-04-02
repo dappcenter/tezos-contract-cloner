@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Tezos, TezosToolkit } from "@taquito/taquito";
+import React, { useState, useEffect } from "react";
+import { Tezos } from "@taquito/taquito";
+import { MichelsonV1Expression } from "@taquito/rpc";
 import "./App.css";
 import { useForm } from "react-hook-form";
 import Provider from "./Provider";
@@ -10,17 +11,36 @@ import FAUCET_KEY from "./utils/carthage-wallet";
 const App: React.FC = () => {
   const { register, handleSubmit } = useForm();
   const [txnAddress, setTxnAddress] = useState("");
-  const [code, setCode] = useState("");
-  const [storage, setStorage] = useState("");
+  const [code, setCode] = useState<MichelsonV1Expression[] | string>([]);
+  const [storage, setStorage] = useState<MichelsonV1Expression | string>();
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
-  const toolkit = new TezosToolkit();
+
+  useEffect(() => {
+    if (code) {
+      console.log(code);
+    }
+    if (storage) {
+      console.log(storage);
+    }
+  }, [code, storage]);
+
   const onSubmit = async (data: any): Promise<any> => {
     await Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
-    await Tezos.rpc.getScript("KT1HqWsXrGbHWc9muqkApqWu64WsxCU3FoRf").then(t => {
-      setCode(JSON.stringify(t.code as any));
-      setStorage(JSON.stringify(t.storage as any));
+    const newContract = await Tezos.contract.at("KT1JVErLYTgtY8uGGZ4mso2npTSxqVLDRVbC");
+
+    // setCode(contract.script.code);
+    // setStorage(contract.script.storage);
+    console.log(newContract.script.code, newContract.script.storage);
+
+    const originationOp = await Tezos.contract.originate({
+      code: newContract.script.code,
+      init: newContract.script.storage
     });
+    const contract = await originationOp.contract();
+    await console.log(contract);
+
+    //   .then(op => op.contract());
     // await toolkit.rpc.getScript("KT1HqWsXrGbHWc9muqkApqWu64WsxCU3FoRf").then(t => console.log(t));
     // setTxnAddress(data.address);
     // showSnackbar(true);
@@ -83,12 +103,10 @@ const App: React.FC = () => {
                 <input id="show-balance-button" type="submit" />
               </form>
             </div>
-            {storage ||
-              (code && (
-                <div>
-                  {storage} {code}
-                </div>
-              ))}
+
+            <div>
+              <pre>{code && JSON.stringify(code)}</pre>
+            </div>
           </div>
         </div>
       </div>
