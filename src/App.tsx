@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import Provider from "./components/Provider/Provider";
 import ContractNetwork from "./components/ContractNetwork/ContractNetwork";
 import LaunchNetwork from "./components/LaunchNetwork/LaunchNetwork";
-import Snackbar from "@material-ui/core/Snackbar";
+import Snackbar from "./components/Snackbar/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FAUCET_KEY from "./utils/carthage-wallet";
 import Navbar from "./components/Navbar/Navbar";
@@ -15,7 +15,7 @@ import { split as SplitEditor } from "react-ace";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
 
-const App: React.FC = () => {
+const App: React.FC = (): ReactElement => {
   const { register, handleSubmit } = useForm();
   const [txnAddress, setTxnAddress] = useState("");
   const [code, setCode] = useState<MichelsonV1Expression[]>([]);
@@ -94,38 +94,18 @@ const App: React.FC = () => {
       <div id="wallet">
         <h1>Taquito Contract Tool</h1>
         {txnAddress && (
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            open={snackbar}
-            autoHideDuration={5000}
-            onClose={closeSnackbar}
-          >
-            <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity="success">
-              {txnAddress && (
-                <>
-                  Launched new contract at {txnAddress}
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`https://${launchNetwork}.tzstats.com/${txnAddress}`}
-                  >
-                    View on TzStats
-                  </a>
-                </>
-              )}
-            </MuiAlert>
+          <Snackbar snackbar={snackbar} closeSnackbar={closeSnackbar} type="success">
+            <>
+              Launched new contract at {txnAddress}
+              <a target="_blank" rel="noopener noreferrer" href={`https://${launchNetwork}.tzstats.com/${txnAddress}`}>
+                View on TzStats
+              </a>
+            </>
           </Snackbar>
         )}
         {error && (
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            open={snackbar}
-            autoHideDuration={3000}
-            onClose={closeSnackbar}
-          >
-            <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity="warning">
-              {error}
-            </MuiAlert>
+          <Snackbar snackbar={snackbar} closeSnackbar={closeSnackbar} type="warning">
+            <>{error}</>
           </Snackbar>
         )}
         <div id="dialog">
