@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, ReactElement } from "react";
 import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/rpc";
 import "./App.css";
@@ -22,28 +22,36 @@ const App: React.FC = () => {
   const [storage, setStorage] = useState<MichelsonV1Expression | string>();
   const [launchNetwork, setLaunchNetwork] = useState<string>("carthagenet");
   const [contractNetwork, setContractNetwork] = useState<string>("carthagenet");
+  const [contractAddress, setContractAddress] = useState<string>("");
+  const [provider, setProvider] = useState<string>("https://api.tez.ie/rpc/carthagenet");
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
 
-  const handleLaunchNetworkChange = (network: string) => {
+  const handleLaunchNetworkChange = async (network: string) => {
+    // Empty provider if network is sandbox so that user can provide a local node address
+    if (network !== "sandbox") {
+      await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${network}` });
+      setProvider(`https://api.tez.ie/rpc/${network}`);
+    }
+    setProvider(`https://api.tez.ie/rpc/${network}`);
     setLaunchNetwork(network);
   };
 
   const handleContractNetworkChange = (network: string) => {
+    // Empty provider if network is sandbox so that user can provide a local node address
+    if (network === "sandbox") {
+      setProvider("");
+    }
+    setProvider(`https://api.tez.ie/rpc/${network}`);
     setContractNetwork(network);
   };
 
-  const onSubmit = async (data: any): Promise<any> => {
-    // Import key because you need a key to call a contract
-    await Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
-    const newContract = await Tezos.contract.at("KT1JVErLYTgtY8uGGZ4mso2npTSxqVLDRVbC");
-    setCode(newContract.script.code);
-    setStorage(newContract.script.storage);
+  const handleLaunchSubmit = () => {
     // Originate a new contract
     Tezos.contract
       .originate({
-        code: newContract.script.code,
-        init: newContract.script.storage
+        code: code as any,
+        init: storage as any
       })
       .then(originationOp => {
         return originationOp.contract();
@@ -54,14 +62,32 @@ const App: React.FC = () => {
       });
   };
 
+  const onSubmit = async (): Promise<any> => {
+    await Tezos.setProvider({ rpc: provider });
+    // Import key because you need a key to call a contract
+    await Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
+    const newContract = await Tezos.contract.at(contractAddress);
+    setCode(newContract.script.code);
+    setStorage(newContract.script.storage);
+  };
+
   const closeSnackbar = () => {
     showSnackbar(false);
   };
 
+  const updateProvider = async (provider: string) => {
+    setProvider(provider);
+    await Tezos.setProvider({ rpc: provider });
+  };
+
+  const updateContractAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setContractAddress(event.target.value);
+  };
+  console.log(provider);
   return (
     <div>
       <Navbar />
-      <Provider />
+      <Provider provider={provider} updateProvider={updateProvider} />
       <div id="wallet">
         <h1>{contractNetwork.charAt(0).toUpperCase() + contractNetwork.slice(1)} Contract Tool</h1>
         {txnAddress && (
@@ -78,7 +104,7 @@ const App: React.FC = () => {
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`https://${contractNetwork}.tzstats.com/${txnAddress}`}
+                    href={`https://${launchNetwork}.tzstats.com/${txnAddress}`}
                   >
                     View on TzStats
                   </a>
@@ -105,7 +131,13 @@ const App: React.FC = () => {
           <div id="content">
             <div id="balance-form">
               <form onSubmit={handleSubmit(onSubmit)}>
-                <input placeholder="Contract Address" id="address-input" name="address" ref={register} />
+                <input
+                  onChange={updateContractAddress}
+                  placeholder="Contract Address"
+                  id="address-input"
+                  name="address"
+                  ref={register}
+                />
                 <br />
                 <input id="show-balance-button" type="submit" />
               </form>
@@ -115,14 +147,11 @@ const App: React.FC = () => {
         <div>
           <div id="dialog">
             <h2>Launch Contract</h2>
-            <LaunchNetwork handleNetworkChange={handleLaunchNetworkChange} network={launchNetwork} />
-            <div id="content">
-              <div id="balance-form">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <input id="show-balance-button" type="submit" />
-                </form>
-              </div>
-            </div>
+            <LaunchNetwork
+              handleLaunchSubmit={handleLaunchSubmit}
+              handleNetworkChange={handleLaunchNetworkChange}
+              network={launchNetwork}
+            />
           </div>
           <div id="contract-code-editor">
             <SplitEditor

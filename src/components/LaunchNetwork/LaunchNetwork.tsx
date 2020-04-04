@@ -1,10 +1,12 @@
 import React, { ReactElement } from "react";
 import { NetworkProps } from "./types";
 import Select from "react-select";
+import { useForm } from "react-hook-form";
 import "./styles.css";
 
 const ContractNetwork = (props: NetworkProps): ReactElement => {
-  const { handleNetworkChange, network } = props;
+  const { handleNetworkChange, network, handleLaunchSubmit } = props;
+  const { register, handleSubmit } = useForm();
 
   const selectValue = { value: network, label: network.charAt(0).toUpperCase() + network.slice(1) };
 
@@ -18,7 +20,23 @@ const ContractNetwork = (props: NetworkProps): ReactElement => {
     handleNetworkChange(selectedOption.value);
   };
 
-  return <Select className="network-select" options={options} value={selectValue} onChange={handleChange} />;
+  return (
+    <div id="content">
+      <div id="balance-form">
+        <form onSubmit={handleSubmit(handleLaunchSubmit)}>
+          <Select
+            name="address"
+            ref={register}
+            className="network-select"
+            options={options}
+            value={selectValue}
+            onChange={handleChange}
+          />
+          <input id="show-balance-button" type="submit" />
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default ContractNetwork;

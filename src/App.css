@@ -21,12 +21,14 @@ h1 {
 #rpc li {
   list-style: none;
 }
+
 #dialog {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   float: left;
   margin-left: 20px;
   width: 400px;
+  height: 230px;
   border: 1px solid #35636e;
   border-radius: 3px;
 }
@@ -79,6 +81,10 @@ li {
   justify-content: flex-end;
   width: 500px;
   padding-top: 20px;
+}
+
+#wallet h1 {
+  margin-top: 0px;
 }
 
 #address-input {
