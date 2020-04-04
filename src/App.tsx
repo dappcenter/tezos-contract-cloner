@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/rpc";
 import "./App.css";
 import { useForm } from "react-hook-form";
 import Provider from "./components/Provider/Provider";
-import Network from "./components/Network/Network";
+import ContractNetwork from "./components/ContractNetwork/ContractNetwork";
+import LaunchNetwork from "./components/LaunchNetwork/LaunchNetwork";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FAUCET_KEY from "./utils/carthage-wallet";
@@ -19,12 +20,17 @@ const App: React.FC = () => {
   const [txnAddress, setTxnAddress] = useState("");
   const [code, setCode] = useState<MichelsonV1Expression[]>([]);
   const [storage, setStorage] = useState<MichelsonV1Expression | string>();
-  const [network, setNetwork] = useState<string>("carthagenet");
+  const [launchNetwork, setLaunchNetwork] = useState<string>("carthagenet");
+  const [contractNetwork, setContractNetwork] = useState<string>("carthagenet");
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
 
-  const handleNetworkChange = (event: React.ChangeEvent) => {
-    setNetwork((event.target as HTMLSelectElement).value as string);
+  const handleLaunchNetworkChange = (network: string) => {
+    setLaunchNetwork(network);
+  };
+
+  const handleContractNetworkChange = (network: string) => {
+    setContractNetwork(network);
   };
 
   const onSubmit = async (data: any): Promise<any> => {
@@ -57,7 +63,7 @@ const App: React.FC = () => {
       <Navbar />
       <Provider />
       <div id="wallet">
-        <h1>{network.charAt(0).toUpperCase() + network?.slice(1)} Contract Tool</h1>
+        <h1>{contractNetwork.charAt(0).toUpperCase() + contractNetwork.slice(1)} Contract Tool</h1>
         {txnAddress && (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -69,7 +75,11 @@ const App: React.FC = () => {
               {txnAddress && (
                 <>
                   Launched new contract at {txnAddress}
-                  <a target="_blank" rel="noopener noreferrer" href={`https://${network}.tzstats.com/${txnAddress}`}>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://${contractNetwork}.tzstats.com/${txnAddress}`}
+                  >
                     View on TzStats
                   </a>
                 </>
@@ -89,9 +99,9 @@ const App: React.FC = () => {
             </MuiAlert>
           </Snackbar>
         )}
-
         <div id="dialog">
-          <Network handleNetworkChange={handleNetworkChange} network={network} />
+          <h2>Get Contract Code</h2>
+          <ContractNetwork handleNetworkChange={handleContractNetworkChange} network={contractNetwork} />
           <div id="content">
             <div id="balance-form">
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -102,23 +112,36 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
-        <div id="contract-code-editor">
-          <SplitEditor
-            width="90vw"
-            height="300px"
-            mode="json"
-            theme="monokai"
-            tabSize={2}
-            splits={2}
-            style={{ borderRadius: "5px", margin: "0 auto" }}
-            orientation="beside"
-            value={[
-              `${code.length > 0 ? "// Contract Code \n" + JSON.stringify(code, null, 2) : "// Contract Code"} `,
-              `${storage ? "// Storage Code \n" + JSON.stringify(storage, null, 2) : "// Storage Code "}`
-            ]}
-            name="contract-code-editor"
-            editorProps={{ $blockScrolling: true }}
-          />
+        <div>
+          <div id="dialog">
+            <h2>Launch Contract</h2>
+            <LaunchNetwork handleNetworkChange={handleLaunchNetworkChange} network={launchNetwork} />
+            <div id="content">
+              <div id="balance-form">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <input id="show-balance-button" type="submit" />
+                </form>
+              </div>
+            </div>
+          </div>
+          <div id="contract-code-editor">
+            <SplitEditor
+              width="90vw"
+              height="300px"
+              mode="json"
+              theme="monokai"
+              tabSize={2}
+              splits={2}
+              style={{ borderRadius: "5px", margin: "0 auto" }}
+              orientation="beside"
+              value={[
+                `${code.length > 0 ? "// Contract Code \n" + JSON.stringify(code, null, 2) : "// Contract Code"} `,
+                `${storage ? "// Storage Code \n" + JSON.stringify(storage, null, 2) : "// Storage Code "}`
+              ]}
+              name="contract-code-editor"
+              editorProps={{ $blockScrolling: true }}
+            />
+          </div>
         </div>
       </div>
     </div>

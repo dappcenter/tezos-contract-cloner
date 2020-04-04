@@ -52,7 +52,9 @@ h1 {
 #content {
   display: inline-flex;
   flex-direction: column;
-  padding: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-top: 10px;
 }
 
 #rpc-content {
@@ -80,12 +82,13 @@ li {
 }
 
 #address-input {
+  float: left;
   padding: 10px;
   margin-bottom: 8px;
   font-size: 18px;
   border: 1px solid #35636e;
   border-radius: 3px;
-  width: 95%;
+  width: 85%;
 }
 
 #rpc-input {
