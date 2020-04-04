@@ -24,7 +24,8 @@ h1 {
 #dialog {
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
+  float: left;
+  margin-left: 20%;
   width: 500px;
   border: 1px solid #35636e;
   border-radius: 3px;
@@ -48,7 +49,7 @@ h1 {
 }
 
 #content {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   padding: 20px;
 }

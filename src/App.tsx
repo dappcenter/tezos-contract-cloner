@@ -8,11 +8,15 @@ import Network from "./components/Network/Network";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FAUCET_KEY from "./utils/carthage-wallet";
+import AceEditor from "react-ace";
+
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/theme-monokai";
 
 const App: React.FC = () => {
   const { register, handleSubmit } = useForm();
   const [txnAddress, setTxnAddress] = useState("");
-  const [code, setCode] = useState<MichelsonV1Expression[] | string>([]);
+  const [code, setCode] = useState<MichelsonV1Expression[]>([]);
   const [storage, setStorage] = useState<MichelsonV1Expression | string>();
   const [network, setNetwork] = useState<string>("carthagenet");
   const [error, setError] = useState("");
@@ -29,6 +33,7 @@ const App: React.FC = () => {
     // setCode(contract.script.code);
     // setStorage(contract.script.storage);
     console.log(newContract.script.code, newContract.script.storage);
+    setCode(newContract.script.code);
     Tezos.contract
       .originate({
         code: newContract.script.code,
@@ -63,7 +68,6 @@ const App: React.FC = () => {
       <Network handleNetworkChange={handleNetworkChange} network={network} />
       <div id="wallet">
         <h1>{network.charAt(0).toUpperCase() + network?.slice(1)} Contract Tool</h1>
-
         {txnAddress && (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -83,7 +87,6 @@ const App: React.FC = () => {
             </MuiAlert>
           </Snackbar>
         )}
-
         {error && (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -106,12 +109,17 @@ const App: React.FC = () => {
                 <input id="show-balance-button" type="submit" />
               </form>
             </div>
-
-            <div>
-              <pre>{code && JSON.stringify(code)}</pre>
-            </div>
           </div>
         </div>
+        <pre id="editor">
+          <AceEditor
+            mode="json"
+            theme="monokai"
+            value={JSON.stringify(code, null, 2)}
+            name="editor"
+            editorProps={{ $blockScrolling: true }}
+          />
+        </pre>
       </div>
     </div>
   );
