@@ -12,7 +12,7 @@ const App: any = () => {
   const [snackbar, showSnackbar] = useState(false);
 
   const onSubmit = async (data: any) => {
-    if (data.rpc !== "") {
+    if (data.rpc) {
       await Tezos.setProvider({ rpc: data.rpc });
     }
     setProviderMsg("Provider set and key file is importing");
@@ -28,7 +28,7 @@ const App: any = () => {
   };
 
   useEffect(() => {
-    if (provider === "") {
+    if (!provider) {
       Tezos.setProvider({ rpc: "https://api.tez.ie/rpc/carthagenet" });
       setProvider("https://api.tez.ie/rpc/carthagenet");
     }

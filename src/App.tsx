@@ -8,8 +8,8 @@ import Network from "./components/Network/Network";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FAUCET_KEY from "./utils/carthage-wallet";
-import AceEditor from "react-ace";
 import Navbar from "./components/Navbar/Navbar";
+import { split as SplitEditor } from "react-ace";
 
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -32,7 +32,7 @@ const App: React.FC = () => {
     await Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
     const newContract = await Tezos.contract.at("KT1JVErLYTgtY8uGGZ4mso2npTSxqVLDRVbC");
     setCode(newContract.script.code);
-
+    setStorage(newContract.script.storage);
     // Originate a new contract
     Tezos.contract
       .originate({
@@ -102,15 +102,20 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
-        <pre id="editor">
-          <AceEditor
+        <div id="contract-code-editor">
+          <SplitEditor
+            width="650px"
+            height="203px"
             mode="json"
             theme="monokai"
-            value={JSON.stringify(code, null, 2)}
-            name="editor"
+            splits={2}
+            style={{ borderRadius: "5px" }}
+            orientation="beside"
+            value={["hello", "hi"]}
+            name="contract-code-editor"
             editorProps={{ $blockScrolling: true }}
           />
-        </pre>
+        </div>
       </div>
     </div>
   );
