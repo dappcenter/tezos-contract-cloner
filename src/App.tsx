@@ -3,15 +3,11 @@ import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/rpc";
 import "./App.css";
 import { useForm } from "react-hook-form";
-import Provider from "./Provider";
+import Provider from "./components/Provider/Provider";
+import Network from "./components/Network/Network";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FAUCET_KEY from "./utils/carthage-wallet";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 
 const App: React.FC = () => {
   const { register, handleSubmit } = useForm();
@@ -22,17 +18,7 @@ const App: React.FC = () => {
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
 
-  // useEffect(() => {
-  //   if (code) {
-  //     console.log(code);
-  //   }
-  //   if (storage) {
-  //     console.log(storage);
-  //   }
-  // }, [code, storage]);
-  const handleChange = (event: React.ChangeEvent) => {
-    //@ts-ignore
-    console.log(event.target.value as any);
+  const handleNetworkChange = (event: React.ChangeEvent) => {
     setNetwork((event.target as HTMLSelectElement).value as string);
   };
 
@@ -43,13 +29,18 @@ const App: React.FC = () => {
     // setCode(contract.script.code);
     // setStorage(contract.script.storage);
     console.log(newContract.script.code, newContract.script.storage);
-
-    const originationOp = await Tezos.contract.originate({
-      code: newContract.script.code,
-      init: newContract.script.storage
-    });
-    const contract = await originationOp.contract();
-    await console.log(contract);
+    Tezos.contract
+      .originate({
+        code: newContract.script.code,
+        init: newContract.script.storage
+      })
+      .then(originationOp => {
+        return originationOp.contract();
+      })
+      .then(contract => {
+        setTxnAddress(contract.address);
+        showSnackbar(true);
+      });
 
     //   .then(op => op.contract());
     // await toolkit.rpc.getScript("KT1HqWsXrGbHWc9muqkApqWu64WsxCU3FoRf").then(t => console.log(t));
@@ -69,28 +60,29 @@ const App: React.FC = () => {
   return (
     <div>
       <Provider />
+      <Network handleNetworkChange={handleNetworkChange} network={network} />
       <div id="wallet">
         <h1>{network.charAt(0).toUpperCase() + network?.slice(1)} Contract Tool</h1>
 
-        {txnAddress ? (
+        {txnAddress && (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={snackbar}
-            autoHideDuration={3000}
+            autoHideDuration={5000}
             onClose={closeSnackbar}
           >
             <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity="success">
-              {txnAddress ? (
+              {txnAddress && (
                 <>
-                  Grabbing data from {txnAddress}
+                  Launched new contract at {txnAddress}
                   <a target="_blank" rel="noopener noreferrer" href={`https://${network}.tzstats.com/${txnAddress}`}>
                     View on TzStats
                   </a>
                 </>
-              ) : null}
+              )}
             </MuiAlert>
           </Snackbar>
-        ) : null}
+        )}
 
         {error && (
           <Snackbar
@@ -104,21 +96,6 @@ const App: React.FC = () => {
             </MuiAlert>
           </Snackbar>
         )}
-
-        <FormControl>
-          <InputLabel id="demo-simple-select-helper-label">Network</InputLabel>
-          <Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
-            value={network}
-            onChange={e => handleChange(e as any)}
-          >
-            <MenuItem value="carthagenet">Carthagenet</MenuItem>
-            <MenuItem value="mainnet">Mainnet</MenuItem>
-            <MenuItem value="sandbox">Sandbox</MenuItem>
-          </Select>
-          <FormHelperText>Choose A Network</FormHelperText>
-        </FormControl>
 
         <div id="dialog">
           <div id="content">
