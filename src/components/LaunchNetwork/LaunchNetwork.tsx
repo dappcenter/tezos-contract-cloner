@@ -21,21 +21,23 @@ const ContractNetwork = (props: NetworkProps): ReactElement => {
   };
 
   return (
-    <div id="content">
-      <div id="balance-form">
-        <form onSubmit={handleSubmit(handleLaunchSubmit)}>
-          <Select
-            name="address"
-            ref={register}
-            className="network-select"
-            options={options}
-            value={selectValue}
-            onChange={handleChange}
-          />
-          <input id="show-balance-button" type="submit" />
-        </form>
+    <>
+      <Select
+        name="address"
+        ref={register}
+        className="network-select"
+        options={options}
+        value={selectValue}
+        onChange={handleChange}
+      />
+      <div id="content">
+        <div id="balance-form">
+          <form onSubmit={handleSubmit(handleLaunchSubmit)}>
+            <input id="show-balance-button" type="submit" />
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

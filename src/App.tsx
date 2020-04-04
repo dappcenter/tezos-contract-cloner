@@ -27,7 +27,7 @@ const App: React.FC = () => {
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
 
-  const handleLaunchNetworkChange = async (network: string) => {
+  const handleLaunchNetworkChange = async (network: string): Promise<void> => {
     // Empty provider if network is sandbox so that user can provide a local node address
     if (network !== "sandbox") {
       await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${network}` });
@@ -37,7 +37,7 @@ const App: React.FC = () => {
     setLaunchNetwork(network);
   };
 
-  const handleContractNetworkChange = (network: string) => {
+  const handleContractNetworkChange = (network: string): void => {
     // Empty provider if network is sandbox so that user can provide a local node address
     if (network === "sandbox") {
       setProvider("");
@@ -46,7 +46,10 @@ const App: React.FC = () => {
     setContractNetwork(network);
   };
 
-  const handleLaunchSubmit = () => {
+  const handleLaunchSubmit = async (): Promise<void> => {
+    setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
+    // Ensure provider is set to Launch Contract div's desired network
+    await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
     // Originate a new contract
     Tezos.contract
       .originate({
@@ -71,19 +74,19 @@ const App: React.FC = () => {
     setStorage(newContract.script.storage);
   };
 
-  const closeSnackbar = () => {
+  const closeSnackbar = (): void => {
     showSnackbar(false);
   };
 
-  const updateProvider = async (provider: string) => {
+  const updateProvider = async (provider: string): Promise<void> => {
     setProvider(provider);
     await Tezos.setProvider({ rpc: provider });
   };
 
-  const updateContractAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateContractAddress = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setContractAddress(event.target.value);
   };
-  console.log(provider);
+
   return (
     <div>
       <Navbar />
