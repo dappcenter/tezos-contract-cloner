@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { LaunchFormProps } from "./types";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,10 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
     { value: "carthagenet", label: "Carthagenet" },
     { value: "sandbox", label: "Sandbox" }
   ];
+
+  const handleClick = (e: any) => {
+    console.log(e.target.value);
+  };
 
   const handleChange = (selectedOption: any) => {
     handleNetworkChange(selectedOption.value);
@@ -33,16 +37,20 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
       <div id="content">
         <div id="balance-form">
           <form onSubmit={handleSubmit(handleLaunchSubmit)}>
-            <span style={{ display: "flex" }}>
-              <button className="signer-button" type="submit">
-                Faucet Key
-              </button>
-              <button className="signer-button" type="submit">
-                TezBridge
-              </button>
-              <button className="signer-button" type="submit">
-                Beacon
-              </button>
+            <span className="signer-toolbar" style={{ display: "flex" }}>
+              <input
+                onClick={handleClick}
+                value="faucet"
+                id="faucet"
+                className="signer-button"
+                type="radio"
+                autoFocus
+              />
+              <label htmlFor="faucet">Faucet Key</label>
+              <input onClick={handleClick} value="tezbridge" id="tezbridge" className="signer-button" type="radio" />
+              <label htmlFor="tezbridge">TezBridge</label>
+              <input onClick={handleClick} value="beacon" id="beacon" className="signer-button" type="radio" />
+              <label htmlFor="beacon">Beacon</label>
             </span>
             <input id="show-balance-button" type="submit" />
           </form>

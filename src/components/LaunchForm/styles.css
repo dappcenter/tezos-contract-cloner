@@ -26,7 +26,34 @@
   transition: background 0.3s, color 0.3s;
 }
 
-#show-balance-button:hover {
+.signer-button:hover {
   background: #35636e;
   color: white;
+}
+
+.signer-toolbar input[type="radio"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.signer-toolbar label {
+  border: 1px solid #35636e;
+  border-radius: 3px;
+  font-size: 11px;
+  padding: 10px;
+  margin-bottom: 8px;
+  margin-right: 10px;
+  text-transform: uppercase;
+  color: #35636e;
+}
+
+.signer-toolbar input[type="radio"]:checked {
+  background: #35636e !important;
+  color: white !important;
+}
+
+.signer-toolbar input[type="radio"]:focus + label {
+  background: #35636e !important;
+  color: white !important;
 }
