@@ -46,7 +46,7 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
                 type="radio"
                 autoFocus
               />
-              <label htmlFor="faucet">Faucet Key</label>
+              <label htmlFor="ephemeral">Ephemeral Key</label>
               <input onClick={handleClick} value="tezbridge" id="tezbridge" className="signer-button" type="radio" />
               <label htmlFor="tezbridge">TezBridge</label>
               <input onClick={handleClick} value="beacon" id="beacon" className="signer-button" type="radio" />
