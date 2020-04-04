@@ -9,6 +9,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FAUCET_KEY from "./utils/carthage-wallet";
 import AceEditor from "react-ace";
+import Navbar from "./components/Navbar/Navbar";
 
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -27,13 +28,12 @@ const App: React.FC = () => {
   };
 
   const onSubmit = async (data: any): Promise<any> => {
+    // Import key because you need a key to call a contract
     await Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
     const newContract = await Tezos.contract.at("KT1JVErLYTgtY8uGGZ4mso2npTSxqVLDRVbC");
-
-    // setCode(contract.script.code);
-    // setStorage(contract.script.storage);
-    console.log(newContract.script.code, newContract.script.storage);
     setCode(newContract.script.code);
+
+    // Originate a new contract
     Tezos.contract
       .originate({
         code: newContract.script.code,
@@ -46,16 +46,6 @@ const App: React.FC = () => {
         setTxnAddress(contract.address);
         showSnackbar(true);
       });
-
-    //   .then(op => op.contract());
-    // await toolkit.rpc.getScript("KT1HqWsXrGbHWc9muqkApqWu64WsxCU3FoRf").then(t => console.log(t));
-    // setTxnAddress(data.address);
-    // showSnackbar(true);
-    // const txn = Tezos.contract
-    //   .at(data.address)
-    //   .then(contract => console.log(contract))
-    //   .catch(error => setError(`Error: ${error} ${JSON.stringify(error, null, 2)}`));
-    // return txn;
   };
 
   const closeSnackbar = () => {
@@ -64,8 +54,8 @@ const App: React.FC = () => {
 
   return (
     <div>
+      <Navbar />
       <Provider />
-      <Network handleNetworkChange={handleNetworkChange} network={network} />
       <div id="wallet">
         <h1>{network.charAt(0).toUpperCase() + network?.slice(1)} Contract Tool</h1>
         {txnAddress && (
@@ -101,6 +91,7 @@ const App: React.FC = () => {
         )}
 
         <div id="dialog">
+          <Network handleNetworkChange={handleNetworkChange} network={network} />
           <div id="content">
             <div id="balance-form">
               <form onSubmit={handleSubmit(onSubmit)}>

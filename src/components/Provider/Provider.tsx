@@ -36,11 +36,6 @@ const App: any = () => {
 
   return (
     <div id="rpc">
-      <h3>
-        <ul>
-          <li>Note: Key is auto-imported as faucet wallet from /utils/carthage-wallet.ts</li>
-        </ul>
-      </h3>
       <h3>Provider</h3>
       {providerMsg && (
         <Snackbar
