@@ -33,6 +33,17 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
       <div id="content">
         <div id="balance-form">
           <form onSubmit={handleSubmit(handleLaunchSubmit)}>
+            <span style={{ display: "flex" }}>
+              <button className="signer-button" type="submit">
+                Faucet Key
+              </button>
+              <button className="signer-button" type="submit">
+                TezBridge
+              </button>
+              <button className="signer-button" type="submit">
+                Beacon
+              </button>
+            </span>
             <input id="show-balance-button" type="submit" />
           </form>
         </div>

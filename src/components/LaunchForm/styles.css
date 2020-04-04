@@ -10,3 +10,23 @@
 .network-select > div > div > div {
   color: black;
 }
+
+.signer-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 8px;
+  margin-right: 6px;
+  border: 1px solid #35636e;
+  border-radius: 3px;
+  padding: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #35636e;
+  transition: background 0.3s, color 0.3s;
+}
+
+#show-balance-button:hover {
+  background: #35636e;
+  color: white;
+}
