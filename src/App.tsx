@@ -104,14 +104,18 @@ const App: React.FC = () => {
         </div>
         <div id="contract-code-editor">
           <SplitEditor
-            width="650px"
-            height="203px"
+            width="90vw"
+            height="300px"
             mode="json"
             theme="monokai"
+            tabSize={2}
             splits={2}
-            style={{ borderRadius: "5px" }}
+            style={{ borderRadius: "5px", margin: "0 auto" }}
             orientation="beside"
-            value={["hello", "hi"]}
+            value={[
+              `${code.length > 0 ? "// Contract Code \n" + JSON.stringify(code, null, 2) : "// Contract Code"} `,
+              `${storage ? "// Storage Code \n" + JSON.stringify(storage, null, 2) : "// Storage Code "}`
+            ]}
             name="contract-code-editor"
             editorProps={{ $blockScrolling: true }}
           />
