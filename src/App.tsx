@@ -92,7 +92,7 @@ const App: React.FC = () => {
       <Navbar />
       <Provider provider={provider} updateProvider={updateProvider} />
       <div id="wallet">
-        <h1>{contractNetwork.charAt(0).toUpperCase() + contractNetwork.slice(1)} Contract Tool</h1>
+        <h1>Taquito Contract Tool</h1>
         {txnAddress && (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
