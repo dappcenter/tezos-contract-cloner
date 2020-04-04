@@ -2,12 +2,10 @@ import React, { useState, ReactElement } from "react";
 import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/rpc";
 import "./App.css";
-import { useForm } from "react-hook-form";
 import Provider from "./components/Provider/Provider";
-import ContractNetwork from "./components/ContractNetwork/ContractNetwork";
-import LaunchNetwork from "./components/LaunchNetwork/LaunchNetwork";
+import ContractForm from "./components/ContractForm/ContractForm";
+import LaunchForm from "./components/LaunchForm/LaunchForm";
 import Snackbar from "./components/Snackbar/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
 import FAUCET_KEY from "./utils/carthage-wallet";
 import Navbar from "./components/Navbar/Navbar";
 import { split as SplitEditor } from "react-ace";
@@ -16,7 +14,6 @@ import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
 
 const App: React.FC = (): ReactElement => {
-  const { register, handleSubmit } = useForm();
   const [txnAddress, setTxnAddress] = useState("");
   const [code, setCode] = useState<MichelsonV1Expression[]>([]);
   const [storage, setStorage] = useState<MichelsonV1Expression | string>();
@@ -108,29 +105,19 @@ const App: React.FC = (): ReactElement => {
             <>{error}</>
           </Snackbar>
         )}
-        <div id="dialog">
+        <div className="dialog">
           <h2>Get Contract Code</h2>
-          <ContractNetwork handleNetworkChange={handleContractNetworkChange} network={contractNetwork} />
-          <div id="content">
-            <div id="balance-form">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <input
-                  onChange={updateContractAddress}
-                  placeholder="Contract Address"
-                  id="address-input"
-                  name="address"
-                  ref={register}
-                />
-                <br />
-                <input id="show-balance-button" type="submit" />
-              </form>
-            </div>
-          </div>
+          <ContractForm
+            onSubmit={onSubmit}
+            updateContractAddress={updateContractAddress}
+            handleNetworkChange={handleContractNetworkChange}
+            network={contractNetwork}
+          />
         </div>
         <div>
-          <div id="dialog">
+          <div className="dialog">
             <h2>Launch Contract</h2>
-            <LaunchNetwork
+            <LaunchForm
               handleLaunchSubmit={handleLaunchSubmit}
               handleNetworkChange={handleLaunchNetworkChange}
               network={launchNetwork}

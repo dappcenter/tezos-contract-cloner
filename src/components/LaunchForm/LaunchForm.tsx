@@ -1,10 +1,10 @@
 import React, { ReactElement } from "react";
-import { NetworkProps } from "./types";
+import { LaunchFormProps } from "./types";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import "./styles.css";
 
-const ContractNetwork = (props: NetworkProps): ReactElement => {
+const LaunchForm = (props: LaunchFormProps): ReactElement => {
   const { handleNetworkChange, network, handleLaunchSubmit } = props;
   const { register, handleSubmit } = useForm();
 
@@ -41,4 +41,4 @@ const ContractNetwork = (props: NetworkProps): ReactElement => {
   );
 };
 
-export default ContractNetwork;
+export default LaunchForm;

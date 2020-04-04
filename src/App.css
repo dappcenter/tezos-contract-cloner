@@ -22,7 +22,7 @@ h1 {
   list-style: none;
 }
 
-#dialog {
+.dialog {
   display: inline-flex;
   flex-direction: column;
   float: left;
