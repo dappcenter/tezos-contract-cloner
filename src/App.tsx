@@ -47,10 +47,9 @@ const App: React.FC = (): ReactElement => {
     // Ensure provider is set to Launch Contract div's desired network
     await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
     await setSignerMethod(signer, launchNetwork);
-    // Tezos.setSignerProvider(signer);
-    if (!provider) {
-      setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
-    }
+
+    // Make sure provider is updated to reflect launch network in the UI
+    setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
 
     // Originate a new contract
     Tezos.contract
@@ -82,17 +81,14 @@ const App: React.FC = (): ReactElement => {
   };
 
   const updateProvider = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
-    event.preventDefault();
     setProvider(event.target.value);
   };
 
   const updateContractAddress = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    event.preventDefault();
     setContractAddress(event.target.value);
   };
 
   const updateSigner = (event: React.MouseEvent<HTMLInputElement>): void => {
-    event.preventDefault();
     setSigner(event.currentTarget.value);
   };
 

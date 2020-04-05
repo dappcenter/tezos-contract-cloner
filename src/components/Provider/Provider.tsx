@@ -45,7 +45,7 @@ const Provider: any = (props: ProviderProps) => {
               <input
                 onChange={updateProvider}
                 value={provider}
-                placeholder="Defaults to https://api.tez.ie/rpc/[network]"
+                placeholder="Defaults to https://api.tez.ie/rpc/carthagenet"
                 id="rpc-input"
                 name="rpc"
                 ref={register}
