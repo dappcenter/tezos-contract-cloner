@@ -1,7 +1,8 @@
 import React, { useState, ReactElement } from "react";
 import { Tezos } from "@taquito/taquito";
-import { MichelsonV1Expression } from "@taquito/rpc";
-import { HttpBackend } from "@taquito/http-utils";
+import { MichelsonV1Expression } from "@taquito/taquito-rpc";
+import { HttpBackend } from "@taquito/taquito-http-utils";
+import { RemoteSigner } from "@taquito/taquito-remote-signer";
 import Provider from "./components/Provider/Provider";
 import ContractForm from "./components/ContractForm/ContractForm";
 import LaunchForm from "./components/LaunchForm/LaunchForm";
@@ -44,29 +45,35 @@ const App: React.FC = (): ReactElement => {
   };
 
   const handleLaunchSubmit = async (): Promise<void> => {
-    // const httpClient = new HttpBackend();
-    // const { id, pkh } = await httpClient.createRequest({
-    //   url: "https://api.tez.ie/keys/carthagenet/ephemeral",
-    //   method: "POST",
-    //   headers: { Authorization: "Bearer taquito-example" }
-    // });
-    // const signer = new RemoteSigner(pkh, `${signerConfig.keyUrl}/${id}/`, { headers: signerConfig.requestHeaders });
+    // Ensure provider is set to Launch Contract div's desired network
+    await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
+
+    const httpClient = new HttpBackend();
+    const { id, pkh } = await httpClient.createRequest({
+      url: `https://api.tez.ie/keys/${launchNetwork}/ephemeral`,
+      method: "POST",
+      headers: { Authorization: "Bearer taquito-example" },
+    });
+    const signer = new RemoteSigner(pkh, `https://api.tez.ie/keys/${launchNetwork}/ephemeral/${id}/`, {
+      headers: { Authorization: "Bearer taquito-example" },
+    });
+    await Tezos.setSignerProvider(signer);
+
     // Tezos.setSignerProvider(signer);
     if (!provider) {
       setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
     }
-    // Ensure provider is set to Launch Contract div's desired network
-    await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
+
     // Originate a new contract
     Tezos.contract
       .originate({
         code: code as any,
-        init: storage as any
+        init: storage as any,
       })
-      .then(originationOp => {
+      .then((originationOp) => {
         return originationOp.contract();
       })
-      .then(contract => {
+      .then((contract) => {
         setTxnAddress(contract.address);
         showSnackbar(true);
       });
@@ -133,6 +140,8 @@ const App: React.FC = (): ReactElement => {
             />
           </div>
           <div id="contract-code-editor">
+            {/* 
+            // @ts-ignore */}
             <SplitEditor
               width="90vw"
               height="300px"
@@ -144,7 +153,7 @@ const App: React.FC = (): ReactElement => {
               orientation="beside"
               value={[
                 `${code.length > 0 ? "// Contract Code \n" + JSON.stringify(code, null, 2) : "// Contract Code"} `,
-                `${storage ? "// Storage Code \n" + JSON.stringify(storage, null, 2) : "// Storage Code "}`
+                `${storage ? "// Storage Code \n" + JSON.stringify(storage, null, 2) : "// Storage Code "}`,
               ]}
               name="contract-code-editor"
               editorProps={{ $blockScrolling: true }}
