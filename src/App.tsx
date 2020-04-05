@@ -131,6 +131,7 @@ const App: React.FC = (): ReactElement => {
           <div className="dialog">
             <h2>Launch Contract</h2>
             <LaunchForm
+              signer={signer}
               updateSigner={updateSigner}
               handleLaunchSubmit={handleLaunchSubmit}
               handleNetworkChange={handleLaunchNetworkChange}

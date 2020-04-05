@@ -48,7 +48,22 @@
   color: #35636e;
 }
 
-.signer-toolbar-selected {
+.signer-toolbar {
+  display: flex;
+}
+
+.signer-button-selected {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 8px;
+  margin-right: 6px;
+  border: 1px solid #35636e;
+  border-radius: 3px;
+  padding: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
   background: #35636e;
-  color: white;
+  color: white !important;
+  transition: background 0.3s, color 0.3s;
 }
