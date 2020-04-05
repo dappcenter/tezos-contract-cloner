@@ -42,7 +42,14 @@ const Provider: any = (props: ProviderProps) => {
         <div id="rpc-content">
           <div id="balance-form">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <input value={provider} placeholder="Set your provider" id="rpc-input" name="rpc" ref={register} />
+              <input
+                onChange={updateProvider}
+                value={provider}
+                placeholder="Defaults to https://api.tez.ie/rpc/[network]"
+                id="rpc-input"
+                name="rpc"
+                ref={register}
+              />
               <br />
               <input id="show-balance-button" type="submit" />
             </form>

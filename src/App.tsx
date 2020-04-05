@@ -1,7 +1,7 @@
 import React, { useState, ReactElement } from "react";
 import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/rpc";
-import "./App.css";
+import { HttpBackend } from "@taquito/http-utils";
 import Provider from "./components/Provider/Provider";
 import ContractForm from "./components/ContractForm/ContractForm";
 import LaunchForm from "./components/LaunchForm/LaunchForm";
@@ -9,7 +9,7 @@ import Snackbar from "./components/Snackbar/Snackbar";
 import FAUCET_KEY from "./utils/carthage-wallet";
 import Navbar from "./components/Navbar/Navbar";
 import { split as SplitEditor } from "react-ace";
-
+import "./App.css";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
 
@@ -20,7 +20,7 @@ const App: React.FC = (): ReactElement => {
   const [launchNetwork, setLaunchNetwork] = useState<string>("carthagenet");
   const [contractNetwork, setContractNetwork] = useState<string>("carthagenet");
   const [contractAddress, setContractAddress] = useState<string>("");
-  const [provider, setProvider] = useState<string>("https://api.tez.ie/rpc/carthagenet");
+  const [provider, setProvider] = useState<string>("");
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
 
@@ -44,7 +44,17 @@ const App: React.FC = (): ReactElement => {
   };
 
   const handleLaunchSubmit = async (): Promise<void> => {
-    setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
+    // const httpClient = new HttpBackend();
+    // const { id, pkh } = await httpClient.createRequest({
+    //   url: "https://api.tez.ie/keys/carthagenet/ephemeral",
+    //   method: "POST",
+    //   headers: { Authorization: "Bearer taquito-example" }
+    // });
+    // const signer = new RemoteSigner(pkh, `${signerConfig.keyUrl}/${id}/`, { headers: signerConfig.requestHeaders });
+    // Tezos.setSignerProvider(signer);
+    if (!provider) {
+      setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
+    }
     // Ensure provider is set to Launch Contract div's desired network
     await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
     // Originate a new contract
@@ -75,9 +85,8 @@ const App: React.FC = (): ReactElement => {
     showSnackbar(false);
   };
 
-  const updateProvider = async (provider: string): Promise<void> => {
-    setProvider(provider);
-    await Tezos.setProvider({ rpc: provider });
+  const updateProvider = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    setProvider(e.target.value);
   };
 
   const updateContractAddress = (event: React.ChangeEvent<HTMLInputElement>): void => {

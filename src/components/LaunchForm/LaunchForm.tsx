@@ -38,14 +38,7 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
         <div id="balance-form">
           <form onSubmit={handleSubmit(handleLaunchSubmit)}>
             <span className="signer-toolbar" style={{ display: "flex" }}>
-              <input
-                onClick={handleClick}
-                value="faucet"
-                id="faucet"
-                className="signer-button"
-                type="radio"
-                autoFocus
-              />
+              <input onClick={handleClick} value="ephemeral" id="ephemeral" className="signer-button" type="radio" />
               <label htmlFor="ephemeral">Ephemeral Key</label>
               <input onClick={handleClick} value="tezbridge" id="tezbridge" className="signer-button" type="radio" />
               <label htmlFor="tezbridge">TezBridge</label>

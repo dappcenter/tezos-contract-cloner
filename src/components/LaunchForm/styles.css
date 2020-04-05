@@ -48,11 +48,6 @@
   color: #35636e;
 }
 
-.signer-toolbar input[type="radio"]:checked {
-  background: #35636e !important;
-  color: white !important;
-}
-
 .signer-toolbar input[type="radio"]:focus + label {
   background: #35636e !important;
   color: white !important;

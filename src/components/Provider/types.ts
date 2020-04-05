@@ -1,4 +1,4 @@
 export interface ProviderProps {
-  updateProvider: (provider: string) => void;
+  updateProvider: (e: React.ChangeEvent<HTMLInputElement>) => void;
   provider: string;
 }
