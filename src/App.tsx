@@ -81,8 +81,19 @@ const App: React.FC = (): ReactElement => {
 
   const onSubmit = async (): Promise<any> => {
     await Tezos.setProvider({ rpc: provider });
-    // Import key because you need a key to call a contract
-    await Tezos.importKey(FAUCET_KEY.email, FAUCET_KEY.password, FAUCET_KEY.mnemonic.join(" "), FAUCET_KEY.secret);
+    // Get contract code using Ephemeral key
+    const httpClient = new HttpBackend();
+    const { id, pkh } = await httpClient.createRequest({
+      url: `https://api.tez.ie/keys/${launchNetwork}/ephemeral`,
+      method: "POST",
+      headers: { Authorization: "Bearer taquito-example" },
+    });
+    const signer = new RemoteSigner(pkh, `https://api.tez.ie/keys/${launchNetwork}/ephemeral/${id}/`, {
+      headers: { Authorization: "Bearer taquito-example" },
+    });
+    await Tezos.setSignerProvider(signer);
+
+    // Call contract and get code
     const newContract = await Tezos.contract.at(contractAddress);
     setCode(newContract.script.code);
     setStorage(newContract.script.storage);
@@ -92,11 +103,13 @@ const App: React.FC = (): ReactElement => {
     showSnackbar(false);
   };
 
-  const updateProvider = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
-    setProvider(e.target.value);
+  const updateProvider = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    event.preventDefault();
+    setProvider(event.target.value);
   };
 
   const updateContractAddress = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    event.preventDefault();
     setContractAddress(event.target.value);
   };
 
