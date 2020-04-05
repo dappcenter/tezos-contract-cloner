@@ -3,4 +3,5 @@ export interface ContractFormProps {
   updateContractAddress: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: () => void;
   network: string;
+  loading: boolean;
 }

@@ -5,4 +5,5 @@ export interface SnackbarProps {
   closeSnackbar: () => void;
   type: "error" | "success" | "warning" | "info" | undefined;
   children: ReactElement;
+  duration?: number | string;
 }

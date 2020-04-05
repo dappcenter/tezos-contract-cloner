@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import "./styles.css";
 
 const ContractForm = (props: ContractFormProps): ReactElement => {
-  const { handleNetworkChange, network, updateContractAddress, onSubmit } = props;
+  const { handleNetworkChange, network, updateContractAddress, onSubmit, loading } = props;
   const { register, handleSubmit } = useForm();
 
   const selectValue = { value: network, label: network.charAt(0).toUpperCase() + network.slice(1) };
@@ -13,7 +13,7 @@ const ContractForm = (props: ContractFormProps): ReactElement => {
   const options = [
     { value: "mainnet", label: "Mainnet" },
     { value: "carthagenet", label: "Carthagenet" },
-    { value: "sandbox", label: "Sandbox" }
+    { value: "sandbox", label: "Sandbox" },
   ];
 
   const handleChange = (selectedOption: any) => {
@@ -34,7 +34,7 @@ const ContractForm = (props: ContractFormProps): ReactElement => {
               ref={register}
             />
             <br />
-            <input id="show-balance-button" type="submit" />
+            <input disabled={loading ? true : false} id="show-balance-button" type="submit" />
           </form>
         </div>
       </div>

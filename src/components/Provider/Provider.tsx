@@ -9,7 +9,7 @@ const Provider: any = (props: ProviderProps) => {
   const { register, handleSubmit } = useForm();
   const [providerMsg, setProviderMsg] = useState("");
   const [snackbar, showSnackbar] = useState(false);
-  const { updateProvider, provider } = props;
+  const { updateProvider, provider, loading } = props;
 
   const onSubmit = async (data: any) => {
     if (data.rpc) {
@@ -51,7 +51,7 @@ const Provider: any = (props: ProviderProps) => {
                 ref={register}
               />
               <br />
-              <input id="show-balance-button" type="submit" />
+              <input disabled={loading ? true : false} id="show-balance-button" type="submit" />
             </form>
           </div>
         </div>

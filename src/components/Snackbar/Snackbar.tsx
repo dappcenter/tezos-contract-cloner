@@ -4,12 +4,12 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { SnackbarProps } from "./types";
 
 const SnackbarComponent = (props: SnackbarProps): ReactElement => {
-  const { snackbar, closeSnackbar, type, children } = props;
+  const { snackbar, closeSnackbar, type, children, duration } = props;
   return (
     <Snackbar
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       open={snackbar}
-      autoHideDuration={5000}
+      autoHideDuration={duration === "none" ? null : 5000}
       onClose={closeSnackbar}
     >
       <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={type}>

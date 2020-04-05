@@ -20,6 +20,8 @@ const App: React.FC = (): ReactElement => {
   const [contractNetwork, setContractNetwork] = useState<string>("carthagenet");
   const [contractAddress, setContractAddress] = useState<string>("");
   const [signer, setSigner] = useState<string>("ephemeral");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [provider, setProvider] = useState<string>("");
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
@@ -30,7 +32,7 @@ const App: React.FC = (): ReactElement => {
       await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${network}` });
       setProvider(`https://api.tez.ie/rpc/${network}`);
     }
-    setProvider(`https://api.tez.ie/rpc/${network}`);
+    setProvider(network);
     setLaunchNetwork(network);
   };
 
@@ -44,6 +46,10 @@ const App: React.FC = (): ReactElement => {
   };
 
   const handleLaunchSubmit = async (): Promise<void> => {
+    // Set snackbar
+    setLoading(true);
+    setLoadingMessage("Launching contract...");
+    showSnackbar(true);
     // Ensure provider is set to Launch Contract div's desired network
     await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
     await setSignerMethod(signer, launchNetwork);
@@ -61,12 +67,17 @@ const App: React.FC = (): ReactElement => {
         return originationOp.contract();
       })
       .then((contract) => {
+        setLoading(false);
+        showSnackbar(false);
         setTxnAddress(contract.address);
         showSnackbar(true);
       });
   };
 
   const onSubmit = async (): Promise<any> => {
+    setLoading(true);
+    setLoadingMessage("Loading contract code...");
+    showSnackbar(true);
     await Tezos.setProvider({ rpc: provider });
     await setSignerMethod(signer, launchNetwork);
 
@@ -74,6 +85,7 @@ const App: React.FC = (): ReactElement => {
     const newContract = await Tezos.contract.at(contractAddress);
     setCode(newContract.script.code);
     setStorage(newContract.script.storage);
+    setLoading(false);
   };
 
   const closeSnackbar = (): void => {
@@ -92,11 +104,10 @@ const App: React.FC = (): ReactElement => {
     setSigner(event.currentTarget.value);
   };
 
-  console.log(signer);
   return (
     <div>
       <Navbar />
-      <Provider provider={provider} updateProvider={updateProvider} />
+      <Provider loading={loading} provider={provider} updateProvider={updateProvider} />
       <div id="wallet">
         <h1>Taquito Contract Tool</h1>
         {txnAddress && (
@@ -114,9 +125,15 @@ const App: React.FC = (): ReactElement => {
             <>{error}</>
           </Snackbar>
         )}
+        {loading && (
+          <Snackbar duration={"none"} snackbar={snackbar} closeSnackbar={closeSnackbar} type="info">
+            <>{loadingMessage}</>
+          </Snackbar>
+        )}
         <div className="dialog">
           <h2>Get Contract Code</h2>
           <ContractForm
+            loading={loading}
             onSubmit={onSubmit}
             updateContractAddress={updateContractAddress}
             handleNetworkChange={handleContractNetworkChange}
@@ -127,6 +144,7 @@ const App: React.FC = (): ReactElement => {
           <div className="dialog">
             <h2>Launch Contract</h2>
             <LaunchForm
+              loading={loading}
               signer={signer}
               updateSigner={updateSigner}
               handleLaunchSubmit={handleLaunchSubmit}
