@@ -67,8 +67,10 @@ const App: React.FC = (): ReactElement => {
         return originationOp.contract();
       })
       .then((contract) => {
+        // Remove contract launch snackbar message
         setLoading(false);
         showSnackbar(false);
+        // Add block explorer snackbar message
         setTxnAddress(contract.address);
         showSnackbar(true);
       });
@@ -153,7 +155,7 @@ const App: React.FC = (): ReactElement => {
             />
           </div>
           <div id="contract-code-editor">
-            {/* 
+            {/* This is because of a types issue on Ace SplitEditor 
             // @ts-ignore */}
             <SplitEditor
               width="90vw"
