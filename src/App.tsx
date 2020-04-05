@@ -5,7 +5,7 @@ import { split as SplitEditor } from "react-ace";
 import Provider from "./components/Provider/Provider";
 import ContractForm from "./components/ContractForm/ContractForm";
 import LaunchForm from "./components/LaunchForm/LaunchForm";
-import Snackbar from "./components/Snackbar/Snackbar";
+import SnackbarGroup from "./components/SnackbarGroup/SnackbarGroup";
 import Navbar from "./components/Navbar/Navbar";
 import setSignerMethod from "./utils/set-signer-method";
 import "./App.css";
@@ -112,48 +112,30 @@ const App: React.FC = (): ReactElement => {
       <Provider loading={loading} provider={provider} updateProvider={updateProvider} />
       <div id="wallet">
         <h1>Taquito Contract Tool</h1>
-        {txnAddress && (
-          <Snackbar snackbar={snackbar} closeSnackbar={closeSnackbar} type="success">
-            <>
-              Launched new contract at {txnAddress}
-              <a target="_blank" rel="noopener noreferrer" href={`https://${launchNetwork}.tzstats.com/${txnAddress}`}>
-                View on TzStats
-              </a>
-            </>
-          </Snackbar>
-        )}
-        {error && (
-          <Snackbar snackbar={snackbar} closeSnackbar={closeSnackbar} type="warning">
-            <>{error}</>
-          </Snackbar>
-        )}
-        {loading && (
-          <Snackbar duration={"none"} snackbar={snackbar} closeSnackbar={closeSnackbar} type="info">
-            <>{loadingMessage}</>
-          </Snackbar>
-        )}
-        <div className="dialog">
-          <h2>Get Contract Code</h2>
-          <ContractForm
-            loading={loading}
-            onSubmit={onSubmit}
-            updateContractAddress={updateContractAddress}
-            handleNetworkChange={handleContractNetworkChange}
-            network={contractNetwork}
-          />
-        </div>
+        <SnackbarGroup
+          txnAddress={txnAddress}
+          snackbar={snackbar}
+          closeSnackbar={closeSnackbar}
+          error={error}
+          loading={loading}
+          loadingMessage={loadingMessage}
+        />
+        <ContractForm
+          loading={loading}
+          onSubmit={onSubmit}
+          updateContractAddress={updateContractAddress}
+          handleNetworkChange={handleContractNetworkChange}
+          network={contractNetwork}
+        />
         <div>
-          <div className="dialog">
-            <h2>Launch Contract</h2>
-            <LaunchForm
-              loading={loading}
-              signer={signer}
-              updateSigner={updateSigner}
-              handleLaunchSubmit={handleLaunchSubmit}
-              handleNetworkChange={handleLaunchNetworkChange}
-              network={launchNetwork}
-            />
-          </div>
+          <LaunchForm
+            loading={loading}
+            signer={signer}
+            updateSigner={updateSigner}
+            handleLaunchSubmit={handleLaunchSubmit}
+            handleNetworkChange={handleLaunchNetworkChange}
+            network={launchNetwork}
+          />
           <div id="contract-code-editor">
             {/* This is because of a types issue on Ace SplitEditor 
             // @ts-ignore */}

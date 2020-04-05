@@ -22,39 +22,43 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
 
   return (
     <>
-      <Select
-        name="address"
-        ref={register}
-        className="network-select"
-        options={options}
-        value={selectValue}
-        onChange={handleChange}
-      />
-      <div id="content">
-        <div id="balance-form">
-          <form onSubmit={handleSubmit(handleLaunchSubmit)}>
-            <span className="signer-toolbar">
-              <input onClick={updateSigner} value="ephemeral" id="ephemeral" type="radio" />
-              <label
-                className={signer === "ephemeral" ? "signer-button-selected" : "signer-button"}
-                htmlFor="ephemeral"
-              >
-                Ephemeral Key
-              </label>
-              <input onClick={updateSigner} value="tezbridge" id="tezbridge" type="radio" />
-              <label
-                className={signer === "tezbridge" ? "signer-button-selected" : "signer-button"}
-                htmlFor="tezbridge"
-              >
-                TezBridge
-              </label>
-              <input onClick={updateSigner} value="beacon" id="beacon" type="radio" />
-              <label className={signer === "beacon" ? "signer-button-selected" : "signer-button"} htmlFor="beacon">
-                Beacon
-              </label>
-            </span>
-            <input disabled={loading ? true : false} id="show-balance-button" type="submit" />
-          </form>
+      {" "}
+      <div className="dialog">
+        <h2>Launch Contract</h2>
+        <Select
+          name="address"
+          ref={register}
+          className="network-select"
+          options={options}
+          value={selectValue}
+          onChange={handleChange}
+        />
+        <div id="content">
+          <div id="balance-form">
+            <form onSubmit={handleSubmit(handleLaunchSubmit)}>
+              <span className="signer-toolbar">
+                <input onClick={updateSigner} value="ephemeral" id="ephemeral" type="radio" />
+                <label
+                  className={signer === "ephemeral" ? "signer-button-selected" : "signer-button"}
+                  htmlFor="ephemeral"
+                >
+                  Ephemeral Key
+                </label>
+                <input onClick={updateSigner} value="tezbridge" id="tezbridge" type="radio" />
+                <label
+                  className={signer === "tezbridge" ? "signer-button-selected" : "signer-button"}
+                  htmlFor="tezbridge"
+                >
+                  TezBridge
+                </label>
+                <input onClick={updateSigner} value="beacon" id="beacon" type="radio" />
+                <label className={signer === "beacon" ? "signer-button-selected" : "signer-button"} htmlFor="beacon">
+                  Beacon
+                </label>
+              </span>
+              <input disabled={loading ? true : false} id="show-balance-button" type="submit" />
+            </form>
+          </div>
         </div>
       </div>
     </>

@@ -22,20 +22,23 @@ const ContractForm = (props: ContractFormProps): ReactElement => {
 
   return (
     <>
-      <Select className="network-select" options={options} value={selectValue} onChange={handleChange} />
-      <div id="content">
-        <div id="balance-form">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <input
-              onChange={updateContractAddress}
-              placeholder="Contract Address"
-              id="address-input"
-              name="address"
-              ref={register}
-            />
-            <br />
-            <input disabled={loading ? true : false} id="show-balance-button" type="submit" />
-          </form>
+      <div className="dialog">
+        <h2>Get Contract Code</h2>
+        <Select className="network-select" options={options} value={selectValue} onChange={handleChange} />
+        <div id="content">
+          <div id="balance-form">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <input
+                onChange={updateContractAddress}
+                placeholder="Contract Address"
+                id="address-input"
+                name="address"
+                ref={register}
+              />
+              <br />
+              <input disabled={loading ? true : false} id="show-balance-button" type="submit" />
+            </form>
+          </div>
         </div>
       </div>
     </>
