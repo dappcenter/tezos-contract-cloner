@@ -1,9 +1,9 @@
 import React from "react";
 import Snackbar from "../Snackbar/Snackbar";
-import {SnackbarGroupProps} from './types';
+import { SnackbarGroupProps } from "./types";
 
 const SnackbarGroup = (props: SnackbarGroupProps) => {
-  const { txnAddress, snackbar, closeSnackbar, error, loading, loadingMessage } = props;
+  const { txnAddress, snackbar, closeSnackbar, error, loading, loadingMessage, launchNetwork } = props;
   return (
     <>
       {txnAddress && (

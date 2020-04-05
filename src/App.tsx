@@ -113,6 +113,7 @@ const App: React.FC = (): ReactElement => {
       <div id="wallet">
         <h1>Taquito Contract Tool</h1>
         <SnackbarGroup
+          launchNetwork={launchNetwork}
           txnAddress={txnAddress}
           snackbar={snackbar}
           closeSnackbar={closeSnackbar}
