@@ -48,7 +48,7 @@
   color: #35636e;
 }
 
-.signer-toolbar input[type="radio"]:focus + label {
-  background: #35636e !important;
-  color: white !important;
+.signer-toolbar-selected {
+  background: #35636e;
+  color: white;
 }

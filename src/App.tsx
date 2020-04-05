@@ -1,15 +1,13 @@
 import React, { useState, ReactElement } from "react";
 import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/taquito-rpc";
-import { HttpBackend } from "@taquito/taquito-http-utils";
-import { RemoteSigner } from "@taquito/taquito-remote-signer";
+import { split as SplitEditor } from "react-ace";
 import Provider from "./components/Provider/Provider";
 import ContractForm from "./components/ContractForm/ContractForm";
 import LaunchForm from "./components/LaunchForm/LaunchForm";
 import Snackbar from "./components/Snackbar/Snackbar";
-import FAUCET_KEY from "./utils/carthage-wallet";
 import Navbar from "./components/Navbar/Navbar";
-import { split as SplitEditor } from "react-ace";
+import setSignerMethod from "./utils/set-signer-method";
 import "./App.css";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -21,6 +19,7 @@ const App: React.FC = (): ReactElement => {
   const [launchNetwork, setLaunchNetwork] = useState<string>("carthagenet");
   const [contractNetwork, setContractNetwork] = useState<string>("carthagenet");
   const [contractAddress, setContractAddress] = useState<string>("");
+  const [signer, setSigner] = useState<string>("ephemeral");
   const [provider, setProvider] = useState<string>("");
   const [error, setError] = useState("");
   const [snackbar, showSnackbar] = useState(false);
@@ -47,18 +46,7 @@ const App: React.FC = (): ReactElement => {
   const handleLaunchSubmit = async (): Promise<void> => {
     // Ensure provider is set to Launch Contract div's desired network
     await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
-
-    const httpClient = new HttpBackend();
-    const { id, pkh } = await httpClient.createRequest({
-      url: `https://api.tez.ie/keys/${launchNetwork}/ephemeral`,
-      method: "POST",
-      headers: { Authorization: "Bearer taquito-example" },
-    });
-    const signer = new RemoteSigner(pkh, `https://api.tez.ie/keys/${launchNetwork}/ephemeral/${id}/`, {
-      headers: { Authorization: "Bearer taquito-example" },
-    });
-    await Tezos.setSignerProvider(signer);
-
+    await setSignerMethod(signer, launchNetwork);
     // Tezos.setSignerProvider(signer);
     if (!provider) {
       setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
@@ -81,17 +69,7 @@ const App: React.FC = (): ReactElement => {
 
   const onSubmit = async (): Promise<any> => {
     await Tezos.setProvider({ rpc: provider });
-    // Get contract code using Ephemeral key
-    const httpClient = new HttpBackend();
-    const { id, pkh } = await httpClient.createRequest({
-      url: `https://api.tez.ie/keys/${launchNetwork}/ephemeral`,
-      method: "POST",
-      headers: { Authorization: "Bearer taquito-example" },
-    });
-    const signer = new RemoteSigner(pkh, `https://api.tez.ie/keys/${launchNetwork}/ephemeral/${id}/`, {
-      headers: { Authorization: "Bearer taquito-example" },
-    });
-    await Tezos.setSignerProvider(signer);
+    await setSignerMethod(signer, launchNetwork);
 
     // Call contract and get code
     const newContract = await Tezos.contract.at(contractAddress);
@@ -113,6 +91,12 @@ const App: React.FC = (): ReactElement => {
     setContractAddress(event.target.value);
   };
 
+  const updateSigner = (event: React.MouseEvent<HTMLInputElement>): void => {
+    event.preventDefault();
+    setSigner(event.currentTarget.value);
+  };
+
+  console.log(signer);
   return (
     <div>
       <Navbar />
@@ -147,6 +131,7 @@ const App: React.FC = (): ReactElement => {
           <div className="dialog">
             <h2>Launch Contract</h2>
             <LaunchForm
+              updateSigner={updateSigner}
               handleLaunchSubmit={handleLaunchSubmit}
               handleNetworkChange={handleLaunchNetworkChange}
               network={launchNetwork}

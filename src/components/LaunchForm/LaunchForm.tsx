@@ -1,11 +1,11 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement } from "react";
 import { LaunchFormProps } from "./types";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import "./styles.css";
 
 const LaunchForm = (props: LaunchFormProps): ReactElement => {
-  const { handleNetworkChange, network, handleLaunchSubmit } = props;
+  const { handleNetworkChange, network, handleLaunchSubmit, updateSigner } = props;
   const { register, handleSubmit } = useForm();
 
   const selectValue = { value: network, label: network.charAt(0).toUpperCase() + network.slice(1) };
@@ -13,12 +13,8 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
   const options = [
     { value: "mainnet", label: "Mainnet" },
     { value: "carthagenet", label: "Carthagenet" },
-    { value: "sandbox", label: "Sandbox" }
+    { value: "sandbox", label: "Sandbox" },
   ];
-
-  const handleClick = (e: any) => {
-    console.log(e.target.value);
-  };
 
   const handleChange = (selectedOption: any) => {
     handleNetworkChange(selectedOption.value);
@@ -38,11 +34,11 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
         <div id="balance-form">
           <form onSubmit={handleSubmit(handleLaunchSubmit)}>
             <span className="signer-toolbar" style={{ display: "flex" }}>
-              <input onClick={handleClick} value="ephemeral" id="ephemeral" className="signer-button" type="radio" />
+              <input onClick={updateSigner} value="ephemeral" id="ephemeral" className="signer-button" type="radio" />
               <label htmlFor="ephemeral">Ephemeral Key</label>
-              <input onClick={handleClick} value="tezbridge" id="tezbridge" className="signer-button" type="radio" />
+              <input onClick={updateSigner} value="tezbridge" id="tezbridge" className="signer-button" type="radio" />
               <label htmlFor="tezbridge">TezBridge</label>
-              <input onClick={handleClick} value="beacon" id="beacon" className="signer-button" type="radio" />
+              <input onClick={updateSigner} value="beacon" id="beacon" className="signer-button" type="radio" />
               <label htmlFor="beacon">Beacon</label>
             </span>
             <input id="show-balance-button" type="submit" />
