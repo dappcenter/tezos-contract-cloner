@@ -52,7 +52,7 @@ const App: React.FC = (): ReactElement => {
     showSnackbar(true);
     // Ensure provider is set to Launch Contract div's desired network
     await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
-    await setSignerMethod(signer, launchNetwork);
+    await setSignerMethod(signer, contractNetwork, launchNetwork);
 
     // Make sure provider is updated to reflect launch network in the UI
     setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
@@ -71,6 +71,7 @@ const App: React.FC = (): ReactElement => {
         setLoading(false);
         showSnackbar(false);
         // Add block explorer snackbar message
+        setLoadingMessage("");
         setTxnAddress(contract.address);
         showSnackbar(true);
       });
@@ -81,7 +82,7 @@ const App: React.FC = (): ReactElement => {
     setLoadingMessage("Loading contract code...");
     showSnackbar(true);
     await Tezos.setProvider({ rpc: provider });
-    await setSignerMethod(signer, launchNetwork);
+    await setSignerMethod(signer, contractNetwork, launchNetwork);
 
     // Call contract and get code
     const newContract = await Tezos.contract.at(contractAddress);

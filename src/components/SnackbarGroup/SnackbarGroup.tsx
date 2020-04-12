@@ -4,9 +4,10 @@ import { SnackbarGroupProps } from "./types";
 
 const SnackbarGroup = (props: SnackbarGroupProps) => {
   const { txnAddress, snackbar, closeSnackbar, error, loading, loadingMessage, launchNetwork } = props;
+
   return (
     <>
-      {txnAddress && (
+      {txnAddress && !loadingMessage && (
         <Snackbar snackbar={snackbar} closeSnackbar={closeSnackbar} type="success">
           <>
             Launched new contract at {txnAddress}
