@@ -51,6 +51,8 @@ const App: React.FC = (): ReactElement => {
     setLoading(true);
     setLoadingMessage("Launching contract...");
     showSnackbar(true);
+    // Make sure provider is updated to reflect launch network in the UI
+    setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
     // Ensure provider is set to Launch Contract div's desired network
     await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
     await setSignerMethod(
@@ -64,9 +66,6 @@ const App: React.FC = (): ReactElement => {
       setLoadingMessage,
       setTxnAddress
     );
-
-    // Make sure provider is updated to reflect launch network in the UI
-    setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
 
     // Originate a new contract
     Tezos.contract
@@ -121,23 +120,23 @@ const App: React.FC = (): ReactElement => {
         rpc: `https://api.tez.ie/rpc/${launchNetwork ? launchNetwork : contractNetwork}`,
         signer: new TezBridgeSigner(),
       });
-      Tezos.contract
-        .originate({
-          code: code as any,
-          init: storage as any,
-        })
-        .then((originationOp) => {
-          return originationOp.contract();
-        })
-        .then((contract: any) => {
-          // Remove contract launch snackbar message
-          setLoading(false);
-          showSnackbar(false);
-          // Add block explorer snackbar message
-          setLoadingMessage("");
-          setTxnAddress(contract.address);
-          showSnackbar(true);
-        });
+      // Tezos.contract
+      //   .originate({
+      //     code: code as any,
+      //     init: storage as any,
+      //   })
+      //   .then((originationOp) => {
+      //     return originationOp.contract();
+      //   })
+      //   .then((contract: any) => {
+      //     // Remove contract launch snackbar message
+      //     setLoading(false);
+      //     showSnackbar(false);
+      //     // Add block explorer snackbar message
+      //     setLoadingMessage("");
+      //     setTxnAddress(contract.address);
+      //     showSnackbar(true);
+      //   });
     }
     setSigner(event.currentTarget.value);
   };
