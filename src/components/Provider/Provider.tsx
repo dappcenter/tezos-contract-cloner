@@ -44,8 +44,7 @@ const Provider: any = (props: ProviderProps) => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <input
                 onChange={updateProvider}
-                value={provider}
-                placeholder="Defaults to https://api.tez.ie/rpc/carthagenet"
+                value={provider || "https://api.tez.ie/rpc/carthagenet"}
                 id="rpc-input"
                 name="rpc"
                 ref={register}

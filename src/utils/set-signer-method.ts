@@ -3,6 +3,7 @@ import { RemoteSigner } from "@taquito/remote-signer";
 // import { BeaconWallet } from "@taquito/taquito-beacon-wallet";
 import { TezBridgeSigner } from "@taquito/tezbridge-signer";
 import { Tezos } from "@taquito/taquito";
+import { Dispatch, SetStateAction } from "react";
 
 const setSignerMethod = async (
   signer: string,
@@ -10,10 +11,11 @@ const setSignerMethod = async (
   launchNetwork: string,
   code?: any,
   storage?: any,
-  setLoading?: any,
-  showSnackbar?: any,
-  setLoadingMessage?: any,
-  setTxnAddress?: any
+  setLoading?: Dispatch<SetStateAction<boolean>>,
+  showSnackbar?: Dispatch<SetStateAction<boolean>>,
+  setLoadingMessage?: Dispatch<SetStateAction<string>>,
+  setTxnAddress?: Dispatch<SetStateAction<string>>,
+  setError?: Dispatch<SetStateAction<string>>
 ) => {
   switch (signer) {
     case "ephemeral":
@@ -34,25 +36,33 @@ const setSignerMethod = async (
       break;
 
     case "tezbridge":
-      // Originate a new contract
-      Tezos.contract
-        .originate({
-          code: code as any,
-          init: storage as any,
-        })
-        .then((originationOp) => {
-          return originationOp.contract();
-        })
-        .then((contract) => {
-          // Remove contract launch snackbar message
-          setLoading(false);
-          showSnackbar(false);
-          // Add block explorer snackbar message
-          setLoadingMessage("");
-          setTxnAddress(contract.address);
-          showSnackbar(true);
+      try {
+        Tezos.setProvider({
+          rpc: `https://api.tez.ie/rpc/${launchNetwork ? launchNetwork : contractNetwork}`,
+          signer: new TezBridgeSigner(),
         });
-
+        // Originate a new contract
+        Tezos.contract
+          .originate({
+            code: code as any,
+            init: storage as any,
+          })
+          .then((originationOp) => {
+            return originationOp.contract();
+          })
+          .then((contract) => {
+            // Remove contract launch snackbar message
+            setLoading && setLoading(false);
+            showSnackbar && showSnackbar(false);
+            // Add block explorer snackbar message
+            setLoadingMessage && setLoadingMessage("");
+            setTxnAddress && setTxnAddress(contract.address);
+            showSnackbar && showSnackbar(true);
+            localStorage.setItem("lastLaunchedContract", contract.address);
+          });
+      } catch (e) {
+        setError && setError(e.message);
+      }
       break;
 
     case "beacon":

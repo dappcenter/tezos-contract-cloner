@@ -1,4 +1,4 @@
-import React, { useState, ReactElement } from "react";
+import React, { useState, ReactElement, useEffect } from "react";
 import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/rpc";
 import { split as SplitEditor } from "react-ace";
@@ -24,8 +24,14 @@ const App: React.FC = (): ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [provider, setProvider] = useState<string>("");
-  const [error, setError] = useState("");
-  const [snackbar, showSnackbar] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [snackbar, showSnackbar] = useState<boolean>(false);
+  const [lastLaunchedContract, setLastLaunchedContract] = useState<string>("");
+
+  useEffect(() => {
+    const lastLaunchedContract = localStorage.getItem("lastLaunchedContract") as string;
+    setLastLaunchedContract(lastLaunchedContract);
+  }, [txnAddress]);
 
   const handleLaunchNetworkChange = async (network: string): Promise<void> => {
     // Empty provider if network is sandbox so that user can provide a local node address
@@ -64,7 +70,8 @@ const App: React.FC = (): ReactElement => {
       setLoading,
       showSnackbar,
       setLoadingMessage,
-      setTxnAddress
+      setTxnAddress,
+      setError
     );
 
     // Originate a new contract
@@ -83,6 +90,7 @@ const App: React.FC = (): ReactElement => {
         // Add block explorer snackbar message
         setLoadingMessage("");
         setTxnAddress(contract.address);
+        localStorage.setItem("lastLaunchedContract", contract.address);
         showSnackbar(true);
       });
   };
@@ -114,29 +122,8 @@ const App: React.FC = (): ReactElement => {
   };
 
   const updateSigner = async (event: React.MouseEvent<HTMLInputElement>): Promise<any> => {
-    console.log(event.currentTarget.value, event.currentTarget.value === "tezbridge");
+    // Do TezBridge signer setup
     if (event.currentTarget.value === "tezbridge") {
-      Tezos.setProvider({
-        rpc: `https://api.tez.ie/rpc/${launchNetwork ? launchNetwork : contractNetwork}`,
-        signer: new TezBridgeSigner(),
-      });
-      // Tezos.contract
-      //   .originate({
-      //     code: code as any,
-      //     init: storage as any,
-      //   })
-      //   .then((originationOp) => {
-      //     return originationOp.contract();
-      //   })
-      //   .then((contract: any) => {
-      //     // Remove contract launch snackbar message
-      //     setLoading(false);
-      //     showSnackbar(false);
-      //     // Add block explorer snackbar message
-      //     setLoadingMessage("");
-      //     setTxnAddress(contract.address);
-      //     showSnackbar(true);
-      //   });
     }
     setSigner(event.currentTarget.value);
   };
@@ -144,7 +131,19 @@ const App: React.FC = (): ReactElement => {
   return (
     <div>
       <Navbar />
-      <Provider loading={loading} provider={provider} updateProvider={updateProvider} />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Provider loading={loading} provider={provider} updateProvider={updateProvider} />
+        {lastLaunchedContract && (
+          <>
+            <h3>
+              Last Launched Contract:
+              <div style={{ display: "block", marginRight: "20px" }}>
+                <h5 style={{ marginTop: "10px" }}>{lastLaunchedContract}</h5>
+              </div>
+            </h3>
+          </>
+        )}
+      </div>
       <div id="wallet">
         <h1>Taquito Contract Tool</h1>
         <SnackbarGroup
