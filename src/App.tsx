@@ -1,6 +1,6 @@
 import React, { useState, ReactElement } from "react";
 import { Tezos } from "@taquito/taquito";
-import { MichelsonV1Expression } from "@taquito/taquito-rpc";
+import { MichelsonV1Expression } from "@taquito/rpc";
 import { split as SplitEditor } from "react-ace";
 import Provider from "./components/Provider/Provider";
 import ContractForm from "./components/ContractForm/ContractForm";

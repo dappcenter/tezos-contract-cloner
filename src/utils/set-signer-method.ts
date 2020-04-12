@@ -1,7 +1,7 @@
-import { HttpBackend } from "@taquito/taquito-http-utils";
-import { RemoteSigner } from "@taquito/taquito-remote-signer";
+import { HttpBackend } from "@taquito/http-utils";
+import { RemoteSigner } from "@taquito/remote-signer";
 // import { BeaconWallet } from "@taquito/taquito-beacon-wallet";
-// import { TezBridgeWallet } from "@taquito/taquito-tezbridge-wallet";
+import { TezBridgeSigner } from "@taquito/tezbridge-signer";
 
 import { Tezos } from "@taquito/taquito";
 
@@ -11,7 +11,7 @@ const setSignerMethod = async (signer: string, contractNetwork: string, launchNe
       const httpClient = new HttpBackend();
       // launchNetwork ? launchNetwork : contractNetwork
       const { id, pkh } = await httpClient.createRequest({
-        url: `https://api.tez.ie/keys/${launchNetwork}/ephemeral`,
+        url: `https://api.tez.ie/keys/${launchNetwork ? launchNetwork : contractNetwork}/ephemeral`,
         method: "POST",
         headers: { Authorization: "Bearer taquito-example" },
       });
@@ -28,17 +28,17 @@ const setSignerMethod = async (signer: string, contractNetwork: string, launchNe
       break;
 
     case "tezbridge":
-      // await Tezos.setProvider({
-      //   rpc: `https://api.tez.ie/rpc/${launchNetwork ? launchNetwork : contractNetwork}`,
-      //   wallet: new TezBridgeWallet(),
-      // });
+      await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork ? launchNetwork : contractNetwork}` });
+      await Tezos.setProvider({
+        // rpc: `https://api.tez.ie/rpc/${launchNetwork ? launchNetwork : contractNetwork}`,
+        signer: new TezBridgeSigner(),
+      });
       break;
 
     case "beacon":
-      console.log("becaon");
-      //   const wallet = new BeaconWallet({ name: 'test' })
-      //   await wallet.requestPermissions()
-      //   this.taquito.setProvider({ rpc: this.taquito.rpc, wallet });
+      // const wallet = new BeaconWallet({ name: 'test' })
+      // await wallet.requestPermissions()
+      // this.taquito.setProvider({ rpc: this.taquito.rpc, wallet });
       // }
       break;
 
