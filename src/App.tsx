@@ -45,7 +45,7 @@ const App: React.FC = (): ReactElement => {
     setContractNetwork(network);
   };
 
-  const handleLaunchSubmit = async (): Promise<void> => {
+  const handleContractLaunchSubmit = async (): Promise<void> => {
     // Set snackbar
     setLoading(true);
     setLoadingMessage("Launching contract...");
@@ -77,7 +77,7 @@ const App: React.FC = (): ReactElement => {
       });
   };
 
-  const onSubmit = async (): Promise<any> => {
+  const handleContractCodeSubmit = async (): Promise<any> => {
     setLoading(true);
     setLoadingMessage("Loading contract code...");
     showSnackbar(true);
@@ -124,7 +124,7 @@ const App: React.FC = (): ReactElement => {
         />
         <ContractForm
           loading={loading}
-          onSubmit={onSubmit}
+          handleContractSubmit={handleContractCodeSubmit}
           updateContractAddress={updateContractAddress}
           handleNetworkChange={handleContractNetworkChange}
           network={contractNetwork}
@@ -134,7 +134,7 @@ const App: React.FC = (): ReactElement => {
             loading={loading}
             signer={signer}
             updateSigner={updateSigner}
-            handleLaunchSubmit={handleLaunchSubmit}
+            handleLaunchSubmit={handleContractLaunchSubmit}
             handleNetworkChange={handleLaunchNetworkChange}
             network={launchNetwork}
           />

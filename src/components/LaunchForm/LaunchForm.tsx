@@ -34,7 +34,7 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
           onChange={handleChange}
         />
         <div id="content">
-          <div id="balance-form">
+          <div id="contract-launch-form">
             <form onSubmit={handleSubmit(handleLaunchSubmit)}>
               <span className="signer-toolbar">
                 <input onClick={updateSigner} value="ephemeral" id="ephemeral" type="radio" />

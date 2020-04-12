@@ -124,6 +124,12 @@ li {
   color: white;
 }
 
+#show-balance-button:disabled {
+  background-color: #aaa;
+  color: white !important;
+  border: none !important;
+}
+
 #balance-output {
   justify-content: center;
   align-items: center;
