@@ -2,6 +2,7 @@ import React, { useState, ReactElement } from "react";
 import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/rpc";
 import { split as SplitEditor } from "react-ace";
+import { TezBridgeSigner } from "@taquito/tezbridge-signer";
 import Provider from "./components/Provider/Provider";
 import ContractForm from "./components/ContractForm/ContractForm";
 import LaunchForm from "./components/LaunchForm/LaunchForm";
@@ -52,7 +53,17 @@ const App: React.FC = (): ReactElement => {
     showSnackbar(true);
     // Ensure provider is set to Launch Contract div's desired network
     await Tezos.setProvider({ rpc: `https://api.tez.ie/rpc/${launchNetwork}` });
-    await setSignerMethod(signer, contractNetwork, launchNetwork);
+    await setSignerMethod(
+      signer,
+      contractNetwork,
+      launchNetwork,
+      code,
+      storage,
+      setLoading,
+      showSnackbar,
+      setLoadingMessage,
+      setTxnAddress
+    );
 
     // Make sure provider is updated to reflect launch network in the UI
     setProvider(`https://api.tez.ie/rpc/${launchNetwork}`);
@@ -103,7 +114,31 @@ const App: React.FC = (): ReactElement => {
     setContractAddress(event.target.value);
   };
 
-  const updateSigner = (event: React.MouseEvent<HTMLInputElement>): void => {
+  const updateSigner = async (event: React.MouseEvent<HTMLInputElement>): Promise<any> => {
+    console.log(event.currentTarget.value, event.currentTarget.value === "tezbridge");
+    if (event.currentTarget.value === "tezbridge") {
+      Tezos.setProvider({
+        rpc: `https://api.tez.ie/rpc/${launchNetwork ? launchNetwork : contractNetwork}`,
+        signer: new TezBridgeSigner(),
+      });
+      Tezos.contract
+        .originate({
+          code: code as any,
+          init: storage as any,
+        })
+        .then((originationOp) => {
+          return originationOp.contract();
+        })
+        .then((contract: any) => {
+          // Remove contract launch snackbar message
+          setLoading(false);
+          showSnackbar(false);
+          // Add block explorer snackbar message
+          setLoadingMessage("");
+          setTxnAddress(contract.address);
+          showSnackbar(true);
+        });
+    }
     setSigner(event.currentTarget.value);
   };
 
