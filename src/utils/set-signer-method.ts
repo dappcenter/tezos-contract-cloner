@@ -61,14 +61,9 @@ const setSignerMethod = async (
           setLoadingMessage && setLoadingMessage("");
           setTxnAddress && setTxnAddress(contract.address);
           showSnackbar && showSnackbar(true);
-          localStorage.setItem("lastLaunchedContract", contract.address);
         })
         .catch((e) => {
-          if (setError) {
-            setError(() => {
-              throw new Error(e.message);
-            });
-          }
+          throw e;
         });
       break;
 

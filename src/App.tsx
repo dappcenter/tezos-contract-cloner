@@ -2,7 +2,6 @@ import React, { useState, ReactElement, useEffect } from "react";
 import { Tezos } from "@taquito/taquito";
 import { MichelsonV1Expression } from "@taquito/rpc";
 import { split as SplitEditor } from "react-ace";
-import { TezBridgeSigner } from "@taquito/tezbridge-signer";
 import Provider from "./components/Provider/Provider";
 import ContractForm from "./components/ContractForm/ContractForm";
 import LaunchForm from "./components/LaunchForm/LaunchForm";
@@ -29,6 +28,9 @@ const App: React.FC = (): ReactElement => {
   const [lastLaunchedContract, setLastLaunchedContract] = useState<string>("");
 
   useEffect(() => {
+    if (txnAddress) {
+      localStorage.setItem("lastLaunchedContract", txnAddress);
+    }
     const lastLaunchedContract = localStorage.getItem("lastLaunchedContract") as string;
     setLastLaunchedContract(lastLaunchedContract);
   }, [txnAddress]);
@@ -74,25 +76,26 @@ const App: React.FC = (): ReactElement => {
       setError
     );
 
-    // Originate a new contract
-    Tezos.contract
-      .originate({
-        code: code as any,
-        init: storage as any,
-      })
-      .then((originationOp) => {
-        return originationOp.contract();
-      })
-      .then((contract) => {
-        // Remove contract launch snackbar message
-        setLoading(false);
-        showSnackbar(false);
-        // Add block explorer snackbar message
-        setLoadingMessage("");
-        setTxnAddress(contract.address);
-        localStorage.setItem("lastLaunchedContract", contract.address);
-        showSnackbar(true);
-      });
+    if (signer !== "tezbridge") {
+      // Originate a new contract
+      Tezos.contract
+        .originate({
+          code: code as any,
+          init: storage as any,
+        })
+        .then((originationOp) => {
+          return originationOp.contract();
+        })
+        .then((contract) => {
+          // Remove contract launch snackbar message
+          setLoading(false);
+          showSnackbar(false);
+          // Add block explorer snackbar message
+          setLoadingMessage("");
+          setTxnAddress(contract.address);
+          showSnackbar(true);
+        });
+    }
   };
 
   const handleContractCodeSubmit = async (): Promise<any> => {
@@ -133,7 +136,7 @@ const App: React.FC = (): ReactElement => {
   const initialStorageValue = storage ? "// Storage Code \n" + JSON.stringify(storage, null, 2) : "// Storage Code ";
 
   return (
-    <div>
+    <>
       <Navbar />
       <div id="top-header">
         <Provider loading={loading} provider={provider} updateProvider={updateProvider} />
@@ -194,7 +197,7 @@ const App: React.FC = (): ReactElement => {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
