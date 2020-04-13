@@ -106,6 +106,7 @@ const App: React.FC = (): ReactElement => {
     const newContract = await Tezos.contract.at(contractAddress);
     setCode(newContract.script.code);
     setStorage(newContract.script.storage);
+    setLoadingMessage("");
     setLoading(false);
   };
 
@@ -128,17 +129,20 @@ const App: React.FC = (): ReactElement => {
     setSigner(event.currentTarget.value);
   };
 
+  const initialCodeValue = code.length > 0 ? "// Contract Code \n" + JSON.stringify(code, null, 2) : "// Contract Code";
+  const initialStorageValue = storage ? "// Storage Code \n" + JSON.stringify(storage, null, 2) : "// Storage Code ";
+
   return (
     <div>
       <Navbar />
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div id="top-header">
         <Provider loading={loading} provider={provider} updateProvider={updateProvider} />
         {lastLaunchedContract && (
           <>
             <h3>
               Last Launched Contract:
-              <div style={{ display: "block", marginRight: "20px" }}>
-                <h5 style={{ marginTop: "10px" }}>{lastLaunchedContract}</h5>
+              <div id="last-launched-contract">
+                <h5>{lastLaunchedContract}</h5>
               </div>
             </h3>
           </>
@@ -155,14 +159,14 @@ const App: React.FC = (): ReactElement => {
           loading={loading}
           loadingMessage={loadingMessage}
         />
-        <ContractForm
-          loading={loading}
-          handleContractSubmit={handleContractCodeSubmit}
-          updateContractAddress={updateContractAddress}
-          handleNetworkChange={handleContractNetworkChange}
-          network={contractNetwork}
-        />
-        <div>
+        <div id="main-forms">
+          <ContractForm
+            loading={loading}
+            handleContractSubmit={handleContractCodeSubmit}
+            updateContractAddress={updateContractAddress}
+            handleNetworkChange={handleContractNetworkChange}
+            network={contractNetwork}
+          />
           <LaunchForm
             loading={loading}
             signer={signer}
@@ -171,26 +175,23 @@ const App: React.FC = (): ReactElement => {
             handleNetworkChange={handleLaunchNetworkChange}
             network={launchNetwork}
           />
-          <div id="contract-code-editor">
-            {/* This is because of a types issue on Ace SplitEditor 
+        </div>
+        <div id="contract-code-editor">
+          {/* This is because of a types issue on Ace SplitEditor 
             // @ts-ignore */}
-            <SplitEditor
-              width="90vw"
-              height="300px"
-              mode="json"
-              theme="monokai"
-              tabSize={2}
-              splits={2}
-              style={{ borderRadius: "5px", margin: "0 auto" }}
-              orientation="beside"
-              value={[
-                `${code.length > 0 ? "// Contract Code \n" + JSON.stringify(code, null, 2) : "// Contract Code"} `,
-                `${storage ? "// Storage Code \n" + JSON.stringify(storage, null, 2) : "// Storage Code "}`,
-              ]}
-              name="contract-code-editor"
-              editorProps={{ $blockScrolling: true }}
-            />
-          </div>
+          <SplitEditor
+            width="1000px"
+            height="300px"
+            mode="json"
+            theme="monokai"
+            tabSize={2}
+            splits={2}
+            style={{ borderRadius: "5px", margin: "0 auto" }}
+            orientation="beside"
+            value={[initialCodeValue, initialStorageValue]}
+            name="contract-code-editor"
+            editorProps={{ $blockScrolling: true }}
+          />
         </div>
       </div>
     </div>

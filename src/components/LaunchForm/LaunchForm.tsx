@@ -22,7 +22,7 @@ const LaunchForm = (props: LaunchFormProps): ReactElement => {
 
   return (
     <>
-      <div className="dialog">
+      <div id="dialog">
         <h2>Launch Contract</h2>
         <Select
           name="address"

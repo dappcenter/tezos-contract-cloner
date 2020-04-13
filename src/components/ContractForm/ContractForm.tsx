@@ -22,7 +22,7 @@ const ContractForm = (props: ContractFormProps): ReactElement => {
 
   return (
     <>
-      <div className="dialog">
+      <div id="dialog">
         <h2>Get Contract Code</h2>
         <Select className="network-select" options={options} value={selectValue} onChange={handleChange} />
         <div id="content">

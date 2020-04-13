@@ -17,7 +17,7 @@ const SnackbarGroup = (props: SnackbarGroupProps) => {
           </>
         </Snackbar>
       )}
-      {error && (
+      {error && !loadingMessage && (
         <Snackbar snackbar={snackbar} closeSnackbar={closeSnackbar} type="warning">
           <>{error}</>
         </Snackbar>
